@@ -5,15 +5,15 @@
 class Background
 {
 private:
-	DWORD		m_dwLastTime;
-	DWORD		m_dwCurTime;
-	float		m_fDeltaTime;
+	//vector<POINT*> Field;
+	//vector<POINT*> Audience;
 
-	float m_fEndpoint;
-	float m_fStartpoint;
+	list<POINT*> Field;
+	list<POINT*> Audience;
 
-	vector<POINT*> Field;
-	vector<POINT*> Audience;
+
+	//float m_fEndPoint;
+	//bool m_bStart;
 public:
 	Background();
 	~Background();
@@ -21,7 +21,7 @@ public:
 	void Init(int x, int y);
 	void Update();
 	void Render();
-	void Clear(vector<POINT*> v);
+	void Clear(list<POINT*> v);
 	void Release();
 };
 

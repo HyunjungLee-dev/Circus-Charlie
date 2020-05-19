@@ -32,7 +32,7 @@ void Player::Move()
 			m_eState = MOVE;
 
 			m_eDirection = DIRECTION_LEFT;
-			m_fpositionX -= 150 * m_fDeltaTime;
+			m_fpositionX -= 100 * m_fDeltaTime;
 
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
@@ -41,7 +41,7 @@ void Player::Move()
 			m_eState = MOVE;
 
 			m_eDirection = DIRECTION_RIGHT;
-			m_fpositionX += 150 * m_fDeltaTime;
+			m_fpositionX += 100 * m_fDeltaTime;
 
 	}
 	if (GetKeyState(VK_SPACE) & 0x8000)
@@ -116,9 +116,9 @@ void Player::Update(HWND hWnd)
 		m_fCurJumpTime += m_fDeltaTime;
 
 		if (m_eDirection == DIRECTION_LEFT)
-			m_fpositionX -= 150 * m_fDeltaTime;
+			m_fpositionX -= 100 * m_fDeltaTime;
 		else if (m_eDirection == DIRECTION_RIGHT)
-			m_fpositionX += 150 * m_fDeltaTime;
+			m_fpositionX += 100 * m_fDeltaTime;
 
 		 if(m_eDirection == DIRECTION_NONE)
 			 m_fpositionY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 80;

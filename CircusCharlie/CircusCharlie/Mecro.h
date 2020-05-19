@@ -1,6 +1,7 @@
 #pragma once
 #include<windows.h>
 #include<vector>
+#include<list>
 #include<math.h>
 using namespace std;
 

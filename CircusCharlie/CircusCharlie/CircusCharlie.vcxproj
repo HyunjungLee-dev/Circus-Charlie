@@ -23,7 +23,7 @@
     <ProjectGuid>{C0B0E35C-87AE-454D-87D8-CB3C31812711}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CircusCharlie</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
