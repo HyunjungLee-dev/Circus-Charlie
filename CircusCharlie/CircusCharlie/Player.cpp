@@ -48,7 +48,6 @@ void Player::Move()
 	{
 		if (m_eState == IDLE || m_eState == MOVE)
 		{
-			// Å° ´Ù¿î
 			m_eState = JUMP;
 			m_fJumpY = m_fpositionY;
 			m_fJumpX = m_fpositionX;

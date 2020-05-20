@@ -5,15 +5,9 @@
 class Background
 {
 private:
-	//vector<POINT*> Field;
-	//vector<POINT*> Audience;
-
 	list<POINT*> Field;
 	list<POINT*> Audience;
-
-
-	//float m_fEndPoint;
-	//bool m_bStart;
+	list<POINT*> Mitter;
 public:
 	Background();
 	~Background();

@@ -13,10 +13,22 @@ void GameManager::Init(HWND hWnd)
 	m_iStage = 1;
 	BitMapManager::GetSingleton()->Init(hWnd);
 	m_Backgrd.Init(0, 100);
+	m_iDistance = 0;
 }
 
 void GameManager::Update()
 {
+	if (GetKeyState(VK_LEFT) & 0x8000)
+	{
+		if (m_iDistance == 0)
+			return;
+		m_iDistance -= 100;
+	}
+	if (GetKeyState(VK_RIGHT) & 0x8000)		
+	{
+		m_iDistance += 100;
+	}
+
 	m_player.Update(m_hWnd);
 	m_Backgrd.Update();
 	Render();

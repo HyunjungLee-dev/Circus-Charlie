@@ -1,5 +1,5 @@
 ﻿  Background.cpp
 c:\users\a07\documents\github\hyunjunglee\circus-charlie\circuscharlie\circuscharlie\background.cpp(14): warning C4244: '=': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 c:\users\a07\documents\github\hyunjunglee\circus-charlie\circuscharlie\circuscharlie\background.cpp(22): warning C4244: '=': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\a07\documents\github\hyunjunglee\circus-charlie\circuscharlie\circuscharlie\background.cpp(29): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\a07\documents\github\hyunjunglee\circus-charlie\circuscharlie\circuscharlie\background.cpp(41): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CircusCharlie.vcxproj -> C:\Users\A07\Documents\GitHub\HyunjungLEE\Circus-Charlie\CircusCharlie\Debug\CircusCharlie.exe

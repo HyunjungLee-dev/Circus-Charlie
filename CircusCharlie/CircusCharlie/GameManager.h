@@ -7,6 +7,7 @@ private:
 	HWND	 m_hWnd;
 	GAMESTATE m_eGameState;
 	int m_iStage;
+	int m_iDistance;
 	Background m_Backgrd;
 	Player m_player;
 public:

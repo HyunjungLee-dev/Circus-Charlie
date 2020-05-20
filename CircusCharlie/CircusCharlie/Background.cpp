@@ -22,6 +22,18 @@ void Background::Init(int x, int y)
 		Field.back()->y = y+ BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).GetSize().cy*1.3;
 	}
 
+	for (int i = 0; i < 10; i++)
+	{
+		int Distance = 1000;
+
+		Mitter.push_back(new POINT);
+		if (i != 0)
+			Mitter.back()->x = 20 + Distance*i;
+		else
+			Mitter.back()->x = 20;
+		Mitter.back()->y = 405;
+	}
+
 }
 
 void Background::Update()
@@ -33,20 +45,14 @@ void Background::Update()
 		for (list<POINT*>::iterator  iter = Audience.begin(); iter != Audience.end(); iter++)
 		{
 			(*iter)->x += 1;
-			if ((*iter)->x + imgSizeX > 512)
-			{
-				int x = Audience.front()->x;
-				int y = Audience.front()->y;
-				if (x > 0)
-				{
-					Audience.push_front(new POINT);
-					Audience.front()->x = x - imgSizeX;
-					Audience.front()->y = y;
-				}
+		}
 
-			}
+		for (list<POINT*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+		{
+			(*iter)->x += 1;
 		}
 	}
+
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
 		for (list<POINT*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
@@ -62,18 +68,27 @@ void Background::Update()
 					Audience.back()->x = x + imgSizeX;
 					Audience.back()->y = y;
 				}
-
 			}
+		}
+
+		for (list<POINT*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+		{
+			(*iter)->x -= 1;
 		}
 	}
 	Render();
 }
 
-void Background::Render()	// 왼쪽으로 갈때 DECO 수정, 속도 체크 필요
+void Background::Render()
 {
 	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
+	TCHAR str[128];
+	HFONT hFont, OldFont;
+	hFont = CreateFont( 25,0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("궁서"));
+	OldFont = (HFONT)SelectObject(hdc, hFont);
 
 	int AudienceNum = 0;
+	int Distance = 100;
 	
 	for (list<POINT*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
 	{
@@ -90,6 +105,18 @@ void Background::Render()	// 왼쪽으로 갈때 DECO 수정, 속도 체크 필요
 	{
 		BitMapManager::GetSingleton()->GetBackgroud(BACK_WAY).Draw(hdc, (*iter)->x, (*iter)->y, 1.2);
 	}
+
+	for (list<POINT*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+	{
+		BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).Draw(hdc, (*iter)->x, (*iter)->y, 1.2);
+		wsprintf(str, TEXT("%d"), Distance);
+		SetBkMode(hdc, TRANSPARENT);
+		SetTextColor(hdc, 0x00ffffff);
+		TextOut(hdc, (*iter)->x * 2, (*iter)->y + 4, str,lstrlen(str));
+		Distance += 100;
+	}
+	SelectObject(hdc, OldFont);
+	DeleteObject(hFont);
 }
 
 void Background::Clear(list<POINT*> v)
@@ -106,6 +133,7 @@ void Background::Release()
 {
 	Clear(Field);
 	Clear(Audience);
+	Clear(Mitter);
 }
 
 Background::~Background()
