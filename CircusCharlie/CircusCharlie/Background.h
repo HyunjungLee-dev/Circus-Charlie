@@ -8,6 +8,7 @@ private:
 	list<POINT*> Field;
 	list<POINT*> Audience;
 	list<POINT*> Mitter;
+	list<POINT*> _Distance;
 public:
 	Background();
 	~Background();

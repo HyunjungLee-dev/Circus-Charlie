@@ -15,13 +15,10 @@ Player::Player()
 	m_fMotionTime = 0.0f;
 }
 
-void Player::Render(HWND hWnd)
+void Player::Render()
 {
-	HDC hdc = GetDC(hWnd);
 	HDC hdc2 = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
 	BitMapManager::GetSingleton()->GetPlayer(m_ePlayImg).Draw(hdc2, m_fpositionX, m_fpositionY);
-	BitMapManager::GetSingleton()->GetBackBuffer().Draw(hdc);
-	ReleaseDC(hWnd, hdc);
 }
 
 void Player::Move()
@@ -32,7 +29,7 @@ void Player::Move()
 			m_eState = MOVE;
 
 			m_eDirection = DIRECTION_LEFT;
-			m_fpositionX -= 100 * m_fDeltaTime;
+		//	m_fpositionX -= 100 * m_fDeltaTime;
 
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
@@ -41,7 +38,7 @@ void Player::Move()
 			m_eState = MOVE;
 
 			m_eDirection = DIRECTION_RIGHT;
-			m_fpositionX += 100 * m_fDeltaTime;
+		//	m_fpositionX += 100 * m_fDeltaTime;
 
 	}
 	if (GetKeyState(VK_SPACE) & 0x8000)
@@ -65,7 +62,7 @@ void Player::Motion()
 	}
 	else	if (m_eState == MOVE)
 	{
-		if (m_fMotionTime >= 0.1f)
+		if (m_fMotionTime >= 0.08f)
 		{
 			switch (m_ePlayImg)
 			{
@@ -114,10 +111,10 @@ void Player::Update(HWND hWnd)
 	{
 		m_fCurJumpTime += m_fDeltaTime;
 
-		if (m_eDirection == DIRECTION_LEFT)
+	/*	if (m_eDirection == DIRECTION_LEFT)
 			m_fpositionX -= 100 * m_fDeltaTime;
 		else if (m_eDirection == DIRECTION_RIGHT)
-			m_fpositionX += 100 * m_fDeltaTime;
+			m_fpositionX += 100 * m_fDeltaTime;*/
 
 		 if(m_eDirection == DIRECTION_NONE)
 			 m_fpositionY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 80;
@@ -134,8 +131,6 @@ void Player::Update(HWND hWnd)
 	}
 
 	Motion();
-
-	Render(hWnd);
 }
 
 

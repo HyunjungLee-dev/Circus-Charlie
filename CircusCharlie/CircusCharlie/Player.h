@@ -25,7 +25,7 @@ public:
 
 	void Move();
 	void Motion();
-	void Render(HWND hWnd);
+	void Render();
 	void Update(HWND hWnd);
 };
 

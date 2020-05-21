@@ -8,6 +8,7 @@ Background::Background()
 
 void Background::Init(int x, int y)
 {
+
 	for (int i = START_POINT; i < AUDIENCE_END; i++)
 	{
 		Audience.push_back(new POINT);
@@ -22,16 +23,19 @@ void Background::Init(int x, int y)
 		Field.back()->y = y+ BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).GetSize().cy*1.3;
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 11; i++)
 	{
-		int Distance = 1000;
+		int Distance = 600;
 
 		Mitter.push_back(new POINT);
+		_Distance.push_back(new POINT);
 		if (i != 0)
 			Mitter.back()->x = 20 + Distance*i;
 		else
 			Mitter.back()->x = 20;
 		Mitter.back()->y = 405;
+		_Distance.back()->x = Mitter.back()->x+30;
+		_Distance.back()->y = Mitter.back()->y + 4;
 	}
 
 }
@@ -42,7 +46,7 @@ void Background::Update()
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-		for (list<POINT*>::iterator  iter = Audience.begin(); iter != Audience.end(); iter++)
+		for (list<POINT*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
 		{
 			(*iter)->x += 1;
 		}
@@ -50,9 +54,14 @@ void Background::Update()
 		for (list<POINT*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 		{
 			(*iter)->x += 1;
+
+		}
+
+		for (list<POINT*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+		{
+			(*iter)->x += 1;
 		}
 	}
-
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
 		for (list<POINT*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
@@ -75,8 +84,12 @@ void Background::Update()
 		{
 			(*iter)->x -= 1;
 		}
+
+		for (list<POINT*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+		{
+			(*iter)->x -= 1;
+		}
 	}
-	Render();
 }
 
 void Background::Render()
@@ -109,11 +122,17 @@ void Background::Render()
 	for (list<POINT*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 	{
 		BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).Draw(hdc, (*iter)->x, (*iter)->y, 1.2);
-		wsprintf(str, TEXT("%d"), Distance);
+	}
+	for (list<POINT*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+	{
+		if(Distance == 0)
+			wsprintf(str, TEXT("00"));
+		else
+			wsprintf(str, TEXT("%d"), Distance);
 		SetBkMode(hdc, TRANSPARENT);
 		SetTextColor(hdc, 0x00ffffff);
-		TextOut(hdc, (*iter)->x * 2, (*iter)->y + 4, str,lstrlen(str));
-		Distance += 100;
+		TextOut(hdc, (*iter)->x , (*iter)->y , str, lstrlen(str));
+		Distance -= 10;
 	}
 	SelectObject(hdc, OldFont);
 	DeleteObject(hFont);

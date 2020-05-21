@@ -48,7 +48,7 @@ void GameManager::Render()
 	else if (m_eGameState == GAME_PLAY)
 	{
 		m_Backgrd.Render();
-		m_player.Render(m_hWnd);
+		m_player.Render();
 		BitMapManager::GetSingleton()->GetBackBuffer().Draw(hdc);
 	}
 
