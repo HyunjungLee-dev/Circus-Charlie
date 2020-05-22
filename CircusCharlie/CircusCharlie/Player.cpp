@@ -98,7 +98,7 @@ void Player::Motion()
 	}
 
 }
-void Player::Update(HWND hWnd)
+void Player::Update()
 {
 	m_dwCurTime = GetTickCount();
 	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
@@ -117,7 +117,7 @@ void Player::Update(HWND hWnd)
 			m_fpositionX += 100 * m_fDeltaTime;*/
 
 		 if(m_eDirection == DIRECTION_NONE)
-			 m_fpositionY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 80;
+			 m_fpositionY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 100;
 		 else
 			m_fpositionY = m_fJumpY - sinf(m_fCurJumpTime * PI) * 80;
 

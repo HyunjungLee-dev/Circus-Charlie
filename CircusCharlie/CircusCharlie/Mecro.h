@@ -6,6 +6,7 @@
 using namespace std;
 
 #define PI	3.141592f
+#define LENGTH 1
 
 enum TYPE
 {
