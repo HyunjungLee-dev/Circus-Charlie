@@ -6,7 +6,14 @@
 using namespace std;
 
 #define PI	3.141592f
-#define LENGTH 1
+#define LENGTH 0.8f
+
+struct POS
+{
+	float m_fX;
+	float m_fY;
+};
+
 
 enum TYPE
 {

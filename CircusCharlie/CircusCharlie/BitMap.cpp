@@ -29,13 +29,13 @@ void BitMap::ImgLoad(HDC hdc,LPCWSTR FileName)
 	m_size.cy = bit.bmHeight;
 }
 
-void BitMap::Draw(HDC hdc, int nX, int nY)
+void BitMap::Draw(HDC hdc, int nX, int nY, float sX, float sY)
 {
-	TransparentBlt(hdc, nX, nY, m_size.cx, m_size.cy,
+	TransparentBlt(hdc, nX, nY, m_size.cx*sX, m_size.cy*sY,
 		MemDC, 0, 0, m_size.cx, m_size.cy, RGB(255, 0, 255));
 }
 
-void BitMap::Draw(HDC hdc, int nX, int nY, double stretch) //전체
+void BitMap::Draw(HDC hdc, int nX, int nY, float stretch) //전체
 {
 	StretchBlt(hdc, nX, nY, m_size.cx*stretch, m_size.cy*stretch, MemDC, 0, 0, m_size.cx, m_size.cy, SRCCOPY);
 }

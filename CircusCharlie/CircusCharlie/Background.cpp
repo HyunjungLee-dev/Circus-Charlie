@@ -11,16 +11,16 @@ void Background::Init(int x, int y)
 
 	for (int i = START_POINT; i < AUDIENCE_END; i++)
 	{
-		Audience.push_back(new POINT);
-		Audience.back()->x = x + i * BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).GetSize().cx*1.25;
-		Audience.back()->y = y;
+		Audience.push_back(new POS);
+		Audience.back()->m_fX = x + i * BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).GetSize().cx*1.25;
+		Audience.back()->m_fY = y;
 	}
 
 	for (int i = START_POINT; i < FIELD_END; i++)
 	{
-		Field.push_back(new POINT);
-		Field.back()->x = x + i * BitMapManager::GetSingleton()->GetBackgroud(BACK_WAY).GetSize().cx;
-		Field.back()->y = y+ BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).GetSize().cy*1.3;
+		Field.push_back(new POS);
+		Field.back()->m_fX= x + i * BitMapManager::GetSingleton()->GetBackgroud(BACK_WAY).GetSize().cx;
+		Field.back()->m_fY = y+ BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).GetSize().cy*1.3;
 	}
 
 
@@ -28,15 +28,15 @@ void Background::Init(int x, int y)
 	{
 		int Distance = 600;
 
-		Mitter.push_back(new POINT);
-		_Distance.push_back(new POINT);
+		Mitter.push_back(new POS);
+		_Distance.push_back(new POS);
 		if (i != 0)
-			Mitter.back()->x = 20 + Distance*i;
+			Mitter.back()->m_fX = 20 + Distance*i;
 		else
-			Mitter.back()->x = 20;
-		Mitter.back()->y = 405;
-		_Distance.back()->x = Mitter.back()->x+30;
-		_Distance.back()->y = Mitter.back()->y + 4;
+			Mitter.back()->m_fX = 20;
+		Mitter.back()->m_fY = 405;
+		_Distance.back()->m_fX = Mitter.back()->m_fX+30;
+		_Distance.back()->m_fY = Mitter.back()->m_fY + 4;
 	}
 
 }
@@ -47,49 +47,49 @@ void Background::Update()
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-		for (list<POINT*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
+		for (list<POS*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
 		{
-			(*iter)->x += LENGTH;
+			(*iter)->m_fX += LENGTH;
 		}
 
-		for (list<POINT*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+		for (list<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 		{
-			(*iter)->x += LENGTH;
+			(*iter)->m_fX += LENGTH;
 
 		}
 
-		for (list<POINT*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+		for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
 		{
-			(*iter)->x += LENGTH;
+			(*iter)->m_fX += LENGTH;
 		}
 		
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		for (list<POINT*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
+		for (list<POS*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
 		{
-			(*iter)->x -= LENGTH;
-			if ((*iter)->x + imgSizeX < 0)
+			(*iter)->m_fX -= LENGTH;
+			if ((*iter)->m_fX + imgSizeX < 0)
 			{
-				int x = Audience.back()->x;
-				int y = Audience.back()->y;
+				int x = Audience.back()->m_fX;
+				int y = Audience.back()->m_fY;
 				if (x + imgSizeX < 512)
 				{
-					Audience.push_back(new POINT);
-					Audience.back()->x = x + imgSizeX;
-					Audience.back()->y = y;
+					Audience.push_back(new POS);
+					Audience.back()->m_fX = x + imgSizeX;
+					Audience.back()->m_fY = y;
 				}
 			}
 		}
 
-		for (list<POINT*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+		for (list<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 		{
-			(*iter)->x -= LENGTH;
+			(*iter)->m_fX -= LENGTH;
 		}
 
-		for (list<POINT*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+		for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
 		{
-			(*iter)->x -= LENGTH;
+			(*iter)->m_fX -= LENGTH;
 		}
 	}
 }
@@ -105,27 +105,27 @@ void Background::Render()
 	int AudienceNum = 0;
 	int Distance = 100;
 	
-	for (list<POINT*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
+	for (list<POS*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
 	{
 		if (AudienceNum == DECO_POINT)
-			BitMapManager::GetSingleton()->GetBackgroud(BACK_DECO).Draw(hdc, (*iter)->x, (*iter)->y, 1.3);
+			BitMapManager::GetSingleton()->GetBackgroud(BACK_DECO).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.3);
 		else
-			BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).Draw(hdc, (*iter)->x, (*iter)->y, 1.3);
+			BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.3);
 		AudienceNum++;
 		if (AudienceNum == AUDIENCE_END)
 			AudienceNum = 0;
 	}
 	
-	for (list<POINT*>::iterator iter = Field.begin(); iter != Field.end(); iter++)
+	for (list<POS*>::iterator iter = Field.begin(); iter != Field.end(); iter++)
 	{
-		BitMapManager::GetSingleton()->GetBackgroud(BACK_WAY).Draw(hdc, (*iter)->x, (*iter)->y, 1.2);
+		BitMapManager::GetSingleton()->GetBackgroud(BACK_WAY).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.2);
 	}
 
-	for (list<POINT*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+	for (list<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 	{
-		BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).Draw(hdc, (*iter)->x, (*iter)->y, 1.2);
+		BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.2);
 	}
-	for (list<POINT*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+	for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
 	{
 		if(Distance == 0)
 			wsprintf(str, TEXT("00"));
@@ -133,16 +133,16 @@ void Background::Render()
 			wsprintf(str, TEXT("%d"), Distance);
 		SetBkMode(hdc, TRANSPARENT);
 		SetTextColor(hdc, 0x00ffffff);
-		TextOut(hdc, (*iter)->x , (*iter)->y , str, lstrlen(str));
+		TextOut(hdc, (*iter)->m_fX , (*iter)->m_fY , str, lstrlen(str));
 		Distance -= 10;
 	}
 	SelectObject(hdc, OldFont);
 	DeleteObject(hFont);
 }
 
-void Background::Clear(list<POINT*> v)
+void Background::Clear(list<POS*> v)
 {
-	for (list<POINT*>::iterator it = v.begin(); it != v.end(); it++)
+	for (list<POS*>::iterator it = v.begin(); it != v.end(); it++)
 	{
 		delete (*it);
 

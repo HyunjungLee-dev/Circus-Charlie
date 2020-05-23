@@ -1,14 +1,13 @@
 #pragma once
 #include"BitMapManager.h"
 
-
 class Background
 {
 private:
-	list<POINT*> Field;
-	list<POINT*> Audience;
-	list<POINT*> Mitter;
-	list<POINT*> _Distance;
+	list<POS*> Field;
+	list<POS*> Audience;
+	list<POS*> Mitter;
+	list<POS*> _Distance;
 public:
 	Background();
 	~Background();
@@ -16,7 +15,7 @@ public:
 	void Init(int x, int y);
 	void Update();
 	void Render();
-	void Clear(list<POINT*> v);
+	void Clear(list<POS*> v);
 	void Release();
 };
 

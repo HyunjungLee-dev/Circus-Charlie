@@ -30,10 +30,9 @@ void GameManager::Update()
 	{
 		m_iDistance += 100;
 	}
-
+	m_enemy.Update();
 	m_player.Update();
 	m_Backgrd.Update();
-	m_enemy.Update();
 
 	Render();
 }
@@ -69,9 +68,11 @@ void GameManager::Render()
 	else if (m_eGameState == GAME_PLAY)
 	{
 		//state();
+
 		m_Backgrd.Render();
-		m_player.Render();
 		m_enemy.Render();
+		m_player.Render();
+		m_enemy.HalfRender();
 		BitMapManager::GetSingleton()->GetBackBuffer().Draw(hdc);
 	}
 	ReleaseDC(m_hWnd, hdc);

@@ -15,7 +15,7 @@ private:
 	float		m_fJumpY;
 
 
-	float m_fpositionX, m_fpositionY;
+	POS m_pos;
 	PLAYER_IMG m_ePlayImg;
 	PLAYERSTATE m_eState;
 	DIRECTION m_eDirection;

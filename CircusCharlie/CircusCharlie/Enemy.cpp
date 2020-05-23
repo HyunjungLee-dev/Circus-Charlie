@@ -8,6 +8,8 @@ Enemy::Enemy()
 
 void Enemy::Init()
 {
+	m_dwLastTime = GetTickCount();
+	m_dwCurTime = GetTickCount();
 	SetJar();
 }
 
@@ -20,70 +22,98 @@ void Enemy::SetJar()
 
 		Jar.push_back(new Fire);
 		if (i != 0)
-			Jar.back()->pos.x = Jar.front()->pos.x + Distance * i;
+			Jar.back()->pos.m_fX = Jar.front()->pos.m_fX + Distance * i;
 		else
-			Jar.back()->pos.x = 1150;
-		Jar.back()->pos.y = 350;
+			Jar.back()->pos.m_fX = 1150.0f;
+		Jar.back()->pos.m_fY= 350.0;
 
 		Jar.back()->type = FIRE_JAR;
 
-		Jar.back()->FireRect.left = Jar.back()->pos.x;
-		Jar.back()->FireRect.top = Jar.back()->pos.y;
+		Jar.back()->FireRect.left = Jar.back()->pos.m_fX;
+		Jar.back()->FireRect.top = Jar.back()->pos.m_fY;
 		Jar.back()->FireRect.right = Jar.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cx;
 		Jar.back()->FireRect.right = Jar.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cy;
 	}
 }
 
-void Enemy::SetRing()
+void Enemy::SetRing() 
 {
-	m_fNowTime = (float)timeGetTime() * 0.001f;
+	int MaxRing = 3;
+	m_dwCurTime = GetTickCount();
+	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
 
-	if (m_fNowTime - m_fStartTime >= 0.1f) // 0.1초마다 실행
+	if (m_fDeltaTime > 2.0f ) // 2초
 	{
-		Ring.push_back(new Fire);
-		Ring.back()->pos.x = 512;
-		Ring.back()->pos.y = 180;
-		Ring.back()->type = FIRE_NOMAL;
-		Ring.back()->FireRect.left = Ring.back()->pos.x;
-		Ring.back()->FireRect.top = Ring.back()->pos.y;
-		Ring.back()->FireRect.right = Ring.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cx;
-		Ring.back()->FireRect.right = Ring.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cy;
+		for (int i = 0; i < 2; i++)
+		{
+			if (Ring.size() > MaxRing)
+				break;
+			Ring.push_back(new Fire);
+			if (i == 0)
+			{
+				Ring.back()->pos.m_fX = 512;
+				Ring.back()->pos.m_fY = 180;
+				Ring.back()->type = FIRE_HALF_LEFT;
+			}
+			else
+			{
+				Ring.back()->pos.m_fX = 512 + BitMapManager::GetSingleton()->GetFire(FIRE_HALF_LEFT).GetSize().cx;;
+				Ring.back()->pos.m_fY = 180;
+				Ring.back()->type = FIRE_HALF_RIGHT;
+			}
+			Ring.back()->FireRect.left = Ring.back()->pos.m_fX;
+			Ring.back()->FireRect.top = Ring.back()->pos.m_fY;
+			Ring.back()->FireRect.right = Ring.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cx;
+			Ring.back()->FireRect.right = Ring.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cy;
+
+			m_dwLastTime = m_dwCurTime;
+		}
 	}
 
-
-	m_fStartTime = m_fNowTime;
 }
 
-void Enemy::Update()
+void Enemy::Update() 
 {
+
 	SetRing();
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
-	{		 
+	{
 		for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
 		{
-			(*iter)->pos.x += LENGTH;
+			(*iter)->pos.m_fX += LENGTH;
 		}
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
 		for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
 		{
-			(*iter)->pos.x -= LENGTH;
+			(*iter)->pos.m_fX -= LENGTH;
+		}
+		for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
+		{
+			(*iter)->pos.m_fX -= LENGTH;
 		}
 	}
+
 
 
 	for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
 	{
 		Motion((*iter));
 	}
+
 	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
 	{
-		if (Ring.front()->pos.x < 0)
-			Ring.pop_front();
-		(*iter)->pos.x -= LENGTH;
+			(*iter)->pos.m_fX -= LENGTH;
 		Motion((*iter));
+		if ((*iter)->pos.m_fX < 0.0f)
+		{
+			list<Fire*>::iterator tmp = iter;
+			Ring.erase(++tmp);
+			Ring.erase(iter);
+			break;
+		}
 	}
 }
 
@@ -97,10 +127,18 @@ void Enemy::Motion(Fire* f)
 	case FIRE_JARB:
 		f->type = FIRE_JAR;
 		break;
-	case FIRE_NOMAL :
-		f->type = FIRE_NOMAL_B;
-	case FIRE_NOMAL_B :
-		f->type = FIRE_NOMAL;
+	case FIRE_HALF_LEFT:
+		f->type = FIRE_HALF_LEFTB;
+		break;
+	case FIRE_HALF_LEFTB:
+		f->type = FIRE_HALF_LEFT;
+		break;
+	case FIRE_HALF_RIGHT:
+		f->type = FIRE_HALF_RIGHTB;
+		break;
+	case FIRE_HALF_RIGHTB:
+		f->type = FIRE_HALF_RIGHT;
+		break;
 	default:
 		break;
 	}
@@ -112,14 +150,25 @@ void Enemy::Render()
 
 	for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
 	{
-		BitMapManager::GetSingleton()->GetFire((*iter)->type).Draw(hdc, (*iter)->pos.x, (*iter)->pos.y);
+		BitMapManager::GetSingleton()->GetFire((*iter)->type).Draw(hdc, (*iter)->pos.m_fX, (*iter)->pos.m_fY,1,1);
 	}
 
 	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
 	{
-		BitMapManager::GetSingleton()->GetFire((*iter)->type).Draw(hdc, (*iter)->pos.x, (*iter)->pos.y);
+		BitMapManager::GetSingleton()->GetFire((*iter)->type).Draw(hdc, (*iter)-> pos.m_fX, (*iter)-> pos.m_fY,1,1.2);
 	}
 
+}
+
+void Enemy::HalfRender()
+{
+	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
+
+	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
+	{
+		if((*iter)->type == FIRE_HALF_RIGHT || (*iter)->type == FIRE_HALF_RIGHTB)
+		BitMapManager::GetSingleton()->GetFire((*iter)->type).Draw(hdc, (*iter)->pos.m_fX, (*iter)->pos.m_fY,1,1.2);
+	}
 }
 
 void Enemy::Clear(list<Fire*> l)

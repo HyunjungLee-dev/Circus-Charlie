@@ -3,7 +3,7 @@
 
 struct  Fire
 {
-	POINT pos;
+	POS pos;
 	FIRE_IMG type;
 	RECT FireRect;
 };
@@ -11,8 +11,9 @@ struct  Fire
 class Enemy
 {
 private:
-	float m_fStartTime;
-	float m_fNowTime;
+	DWORD		m_dwLastTime;
+	DWORD		m_dwCurTime;
+	float		m_fDeltaTime;
 
 	list<Fire*> Ring;
 	list<Fire*> Jar;
@@ -26,6 +27,7 @@ public:
 	void Update();
 	void Motion(Fire* f);
 	void Render();
+	void HalfRender();
 	void Clear(list<Fire*> list);
 	void Release();
 };
