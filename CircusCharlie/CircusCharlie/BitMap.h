@@ -16,6 +16,7 @@ public:
 	void Draw(HDC hdc);
 	inline SIZE GetSize(){return m_size;}
 	HDC GetMemDC(){ return MemDC; }
+	void Release();
 	BitMap();
 	~BitMap();
 };

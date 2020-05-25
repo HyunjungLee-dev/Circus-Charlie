@@ -32,7 +32,18 @@ void Enemy::SetJar()
 		Jar.back()->FireRect.left = Jar.back()->pos.m_fX;
 		Jar.back()->FireRect.top = Jar.back()->pos.m_fY;
 		Jar.back()->FireRect.right = Jar.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cx;
-		Jar.back()->FireRect.right = Jar.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cy;
+		Jar.back()->FireRect.bottom = Jar.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cy;
+	}
+}
+
+void Enemy::UpdateRectPos()
+{
+	for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
+	{
+		(*iter)->FireRect.left = (*iter)->pos.m_fX * 1.2;
+		(*iter)->FireRect.top = (*iter)->pos.m_fY;
+		(*iter)->FireRect.right = ((*iter)->FireRect.left +( BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cx)*0.3);
+		(*iter)->FireRect.bottom = (*iter)->FireRect.top + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cy;
 	}
 }
 
@@ -64,7 +75,7 @@ void Enemy::SetRing()
 			Ring.back()->FireRect.left = Ring.back()->pos.m_fX;
 			Ring.back()->FireRect.top = Ring.back()->pos.m_fY;
 			Ring.back()->FireRect.right = Ring.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cx;
-			Ring.back()->FireRect.right = Ring.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cy;
+			Ring.back()->FireRect.bottom = Ring.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cy;
 
 			m_dwLastTime = m_dwCurTime;
 		}
@@ -115,6 +126,23 @@ void Enemy::Update()
 			break;
 		}
 	}
+
+	UpdateRectPos();
+}
+
+bool Enemy::Collision(RECT rect)
+{
+	RECT rcTemp = { 0 };
+
+	for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
+	{
+		//InflateRect(&(*iter)->FireRect, -25, -15);
+		if (IntersectRect(&rcTemp, &(*iter)->FireRect, &rect))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void Enemy::Motion(Fire* f)

@@ -36,7 +36,7 @@ void Background::Init(int x, int y)
 			Mitter.back()->m_fX = 20;
 		Mitter.back()->m_fY = 405;
 		_Distance.back()->m_fX = Mitter.back()->m_fX+30;
-		_Distance.back()->m_fY = Mitter.back()->m_fY + 4;
+		_Distance.back()->m_fY = Mitter.back()->m_fY + 10;
 	}
 
 }
@@ -99,7 +99,7 @@ void Background::Render()
 	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
 	TCHAR str[128];
 	HFONT hFont, OldFont;
-	hFont = CreateFont( 25,0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("±Ã¼­"));
+	hFont = CreateFont(0, 0, 0, 0, 0, 0, 0, 0, OEM_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("Terminal"));
 	OldFont = (HFONT)SelectObject(hdc, hFont);
 
 	int AudienceNum = 0;

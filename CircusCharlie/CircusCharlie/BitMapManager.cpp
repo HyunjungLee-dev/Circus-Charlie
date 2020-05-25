@@ -23,7 +23,7 @@ void BitMapManager::PlayerImgLoad()
 	m_pPlayer[PLAYER_MOVE0].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//player0.bmp");
 	m_pPlayer[PLAYER_MOVE1].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//player1.bmp");
 	m_pPlayer[PLAYER_MOVE2].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//player2.bmp");
-	m_pPlayer[PLAYER_MOVE2].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//player2.bmp");
+	m_pPlayer[PLAYER_DIE].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//die.bmp");
 	m_pPlayer[PLAYER_WIN0].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//win0.bmp");
 	m_pPlayer[PLAYER_WIN1].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//win1.bmp");
 }

@@ -23,6 +23,7 @@ public:
 	BitMap  GetBackgroud(BACKGROUND_IMG index) { return m_pBackground[index]; }
 	BitMap  GetPlayer(PLAYER_IMG index) { return m_pPlayer[index]; }
 	BitMap GetFire(FIRE_IMG index) { return m_pFire[index]; }
+	BitMap GetIcon(ICON_IMG index) { return m_pIcon[index]; }
 
 	BitMapManager();
 	~BitMapManager();

@@ -24,10 +24,15 @@ public:
 	void Init();
 	void SetJar();
 	void SetRing();
+
 	void Update();
+	void UpdateRectPos();
 	void Motion(Fire* f);
+	bool Collision(RECT rect);
+
 	void Render();
 	void HalfRender();
+
 	void Clear(list<Fire*> list);
 	void Release();
 };

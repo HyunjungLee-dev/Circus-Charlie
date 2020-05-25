@@ -45,10 +45,14 @@ void BitMap::Draw(HDC hdc) //ÀüÃ¼
 	BitBlt(hdc, 0, 0, m_size.cx, m_size.cy, MemDC, 0, 0, SRCCOPY);
 }
 
+void BitMap::Release()
+{
+	SelectObject(MemDC, m_OldBitMap);
+	DeleteObject(m_BitMap);
+	DeleteDC(MemDC);
+}
+
 
 BitMap::~BitMap()
 {
-	//SelectObject(MemDC, m_OldBitMap);
-	//DeleteObject(m_BitMap);
-	//DeleteDC(MemDC);
 }
