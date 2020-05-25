@@ -25,7 +25,7 @@ public:
 	void SetJar();
 	void SetRing();
 
-	void Update();
+	void Update(END end);
 	void UpdateRectPos();
 	void Motion(Fire* f);
 	bool Collision(RECT rect);

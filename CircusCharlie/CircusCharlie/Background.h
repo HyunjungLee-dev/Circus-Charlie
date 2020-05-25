@@ -6,8 +6,10 @@ class Background
 private:
 	list<POS*> Field;
 	list<POS*> Audience;
-	list<POS*> Mitter;
+	vector<POS*> Mitter;
 	list<POS*> _Distance;
+	POS podium;
+	RECT Rctpodium;
 public:
 	Background();
 	~Background();
@@ -15,7 +17,9 @@ public:
 	void Init(int x, int y);
 	void Update();
 	void Render();
-	void Clear(list<POS*> v);
+	float GetMitterPos(int index);
+	void Clear(list<POS*> lst);
+	void Clear(vector<POS*> v);
 	void Release();
 };
 

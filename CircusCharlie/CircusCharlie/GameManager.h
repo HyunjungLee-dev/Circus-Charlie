@@ -17,7 +17,6 @@ private:
 	int m_iStage;
 	int m_iBonus;
 	int m_iHI;
-	int m_Life;
 
 	int m_iDistance;
 
@@ -30,9 +29,10 @@ public:
 
 	void Init(HWND hWnd);
 	void Update();
-	void state();
-	void Font(HDC hdc, int x, int y, TCHAR *str, COLORREF color);
+	void TextUpdate();
+	void Font(int x, int y, TCHAR *str, COLORREF color);
 	void TextRender();
+	void Stage();
 	void Collision();
 	void Release();
 	void Render();

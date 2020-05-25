@@ -11,6 +11,9 @@ void Player::Init()
 	m_pos.m_fX = 100.0f;
 	m_pos.m_fY = 330.0f;
 
+	m_ViewPos.m_fX = 100.0f;
+	m_ViewPos.m_fY = 330.0f;
+
 	m_playerRect.left = m_pos.m_fX;
 	m_playerRect.top = m_pos.m_fY;
 	m_playerRect.right = m_playerRect.left + BitMapManager::GetSingleton()->GetPlayer(PLAYER_MOVE0).GetSize().cx;
@@ -18,6 +21,7 @@ void Player::Init()
 
 	m_eState = IDLE;
 	m_eDirection = DIRECTION_NONE;
+	m_iLife = 4;
 
 	m_dwLastTime = GetTickCount();
 	m_dwCurTime = GetTickCount();
@@ -26,28 +30,38 @@ void Player::Init()
 
 void Player::Render()
 {
-	HDC hdc2 = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-	BitMapManager::GetSingleton()->GetPlayer(m_ePlayImg).Draw(hdc2, 100.0f, m_pos.m_fY,1,1);
+	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
+	BitMapManager::GetSingleton()->GetPlayer(m_ePlayImg).Draw(hdc, m_ViewPos.m_fX, m_pos.m_fY, 1, 1);
 }
 
-void Player::Move()
+void Player::Move(END state)
 {
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
+		if (state == ENDLINE)
+		{
+			m_ViewPos.m_fX -= 100 * m_fDeltaTime;
+		}
 		if (m_eState == IDLE)
 			m_eState = MOVE;
 
 			m_eDirection = DIRECTION_LEFT;
-			m_pos.m_fX -= 100 * m_fDeltaTime;
+			m_pos.m_fX -= 0.01;
+
+			
 
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{	
+		if (state == ENDLINE)
+		{
+			m_ViewPos.m_fX += 100 * m_fDeltaTime;
+		}
 		if (m_eState == IDLE)
 			m_eState = MOVE;
 
 			m_eDirection = DIRECTION_RIGHT;
-			m_pos.m_fX += 100 * m_fDeltaTime;
+			m_pos.m_fX += 0.01;
 
 	}
 	if (GetKeyState(VK_SPACE) & 0x8000)
@@ -106,28 +120,35 @@ void Player::Motion()
 	}
 
 }
-void Player::Update()
+
+
+
+void Player::Update(END state)
 {
 	m_dwCurTime = GetTickCount();
 	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
 	m_dwLastTime = m_dwCurTime;
 
-	Move();
+	Move(state);
 
 
 	if (m_eState == JUMP)
 	{
 		m_fCurJumpTime += m_fDeltaTime;
 
-	/*	if (m_eDirection == DIRECTION_LEFT)
-			m_fpositionX -= 100 * m_fDeltaTime;
-		else if (m_eDirection == DIRECTION_RIGHT)
-			m_fpositionX += 100 * m_fDeltaTime;*/
+		if (state == ENDLINE)
+
+		{
+			if (m_eDirection == DIRECTION_LEFT)
+				m_ViewPos.m_fX -= 100 * m_fDeltaTime;
+			else if (m_eDirection == DIRECTION_RIGHT)
+				m_ViewPos.m_fX += 100 * m_fDeltaTime;
+		}
 
 		 if(m_eDirection == DIRECTION_NONE)
-			 m_pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 130;
+			 m_pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 120;
 		 else
-			 m_pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI) * 130;
+			 m_pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI) * 120;
 
 		if (m_fCurJumpTime > 1.0f)
 		{

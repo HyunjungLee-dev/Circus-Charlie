@@ -18,13 +18,11 @@ void Enemy::SetJar()
 {
 	for (int i = 0; i < 9; i++)
 	{
-		int Distance = 600;
-
 		Jar.push_back(new Fire);
 		if (i != 0)
-			Jar.back()->pos.m_fX = Jar.front()->pos.m_fX + Distance * i;
+			Jar.back()->pos.m_fX = Jar.front()->pos.m_fX + DISTANCE * i;
 		else
-			Jar.back()->pos.m_fX = 1150.0f;
+			Jar.back()->pos.m_fX = 970.0f;
 		Jar.back()->pos.m_fY= 350.0;
 
 		Jar.back()->type = FIRE_JAR;
@@ -83,23 +81,29 @@ void Enemy::SetRing()
 
 }
 
-void Enemy::Update() 
+void Enemy::Update(END end) 
 {
 
 	SetRing();
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-		for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
+		if (end != ENDLINE)
 		{
-			(*iter)->pos.m_fX += LENGTH;
+			for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
+			{
+				(*iter)->pos.m_fX += LENGTH;
+			}
 		}
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
+		if (end != ENDLINE)
 		{
-			(*iter)->pos.m_fX -= LENGTH;
+			for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
+			{
+				(*iter)->pos.m_fX -= LENGTH;
+			}
 		}
 		for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
 		{
@@ -136,7 +140,6 @@ bool Enemy::Collision(RECT rect)
 
 	for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
 	{
-		//InflateRect(&(*iter)->FireRect, -25, -15);
 		if (IntersectRect(&rcTemp, &(*iter)->FireRect, &rect))
 		{
 			return true;

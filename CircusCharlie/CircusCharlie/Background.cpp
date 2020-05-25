@@ -26,18 +26,19 @@ void Background::Init(int x, int y)
 
 	for (int i = 0; i < 11; i++)
 	{
-		int Distance = 600;
-
 		Mitter.push_back(new POS);
 		_Distance.push_back(new POS);
 		if (i != 0)
-			Mitter.back()->m_fX = 20 + Distance*i;
+			Mitter.back()->m_fX = 20 + DISTANCE *i;
 		else
 			Mitter.back()->m_fX = 20;
 		Mitter.back()->m_fY = 405;
-		_Distance.back()->m_fX = Mitter.back()->m_fX+30;
-		_Distance.back()->m_fY = Mitter.back()->m_fY + 10;
+		_Distance.back()->m_fX = Mitter.back()->m_fX+ 20;
+		_Distance.back()->m_fY = Mitter.back()->m_fY + 8;
 	}
+
+	podium.m_fX = Mitter.back()->m_fX;
+	podium.m_fY = 350;
 
 }
 
@@ -52,7 +53,7 @@ void Background::Update()
 			(*iter)->m_fX += LENGTH;
 		}
 
-		for (list<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+		for (vector<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 		{
 			(*iter)->m_fX += LENGTH;
 
@@ -62,6 +63,7 @@ void Background::Update()
 		{
 			(*iter)->m_fX += LENGTH;
 		}
+		podium.m_fX += LENGTH;
 		
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
@@ -82,7 +84,7 @@ void Background::Update()
 			}
 		}
 
-		for (list<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+		for (vector<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 		{
 			(*iter)->m_fX -= LENGTH;
 		}
@@ -91,6 +93,8 @@ void Background::Update()
 		{
 			(*iter)->m_fX -= LENGTH;
 		}
+
+		podium.m_fX-= LENGTH;
 	}
 }
 
@@ -121,9 +125,9 @@ void Background::Render()
 		BitMapManager::GetSingleton()->GetBackgroud(BACK_WAY).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.2);
 	}
 
-	for (list<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+	for (vector<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 	{
-		BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.2);
+		BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1);
 	}
 	for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
 	{
@@ -136,13 +140,29 @@ void Background::Render()
 		TextOut(hdc, (*iter)->m_fX , (*iter)->m_fY , str, lstrlen(str));
 		Distance -= 10;
 	}
+	BitMapManager::GetSingleton()->GetBackgroud(BACK_PODIUM).Draw(hdc, podium.m_fX, podium.m_fY, 1,1);
 	SelectObject(hdc, OldFont);
 	DeleteObject(hFont);
 }
 
-void Background::Clear(list<POS*> v)
+float Background::GetMitterPos(int index)
 {
-	for (list<POS*>::iterator it = v.begin(); it != v.end(); it++)
+	return Mitter[index]->m_fX + BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).GetSize().cx * 3;
+}
+
+void Background::Clear(list<POS*> lst)
+{
+	for (list<POS*>::iterator it = lst.begin(); it != lst.end(); it++)
+	{
+		delete (*it);
+
+	}
+	lst.clear();
+}
+
+void Background::Clear(vector<POS*> v)
+{
+	for (vector<POS*>::iterator it = v.begin(); it != v.end(); it++)
 	{
 		delete (*it);
 
