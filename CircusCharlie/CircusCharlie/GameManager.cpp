@@ -16,7 +16,6 @@ void GameManager::Init(HWND hWnd)
 	m_eGameState = GAME_START;
 	m_iBonus = 5000;
 	m_iStage = 1;
-	m_iDistance = 0;
 	m_iScore = 0;
 	m_iHI = 20000;
 	m_state = { 0,0,514,100 };
@@ -30,7 +29,13 @@ void GameManager::Init(HWND hWnd)
 
 void GameManager::Update()
 {
-	if (m_eGameState == GAME_START) // 시작 화면
+	if (m_eGameState == GAME_STOP)
+	{
+		Collision();
+		TextRender();
+		return;
+	}
+	else if (m_eGameState == GAME_START || m_eGameState == GAME_RE) // 시작 화면
 	{
 		Stage();
 	}
@@ -40,7 +45,7 @@ void GameManager::Update()
 
 		if (GetKeyState(VK_LEFT) & 0x8000)
 		{
-			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(0))
+			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(0)*0.35)
 			{
 				m_enemy.Update(NOTEND);
 				Render();
@@ -58,8 +63,8 @@ void GameManager::Update()
 		
 		m_enemy.Update(NOTEND);
 		m_player.Update(NOTEND);
-		//Collision();
 		m_Backgrd.Update();
+		Collision();
 		Render();
 	}
 }
@@ -76,8 +81,13 @@ void GameManager::Stage()
 	TextRender();
 	wsprintf(str, TEXT("STAGE-%02d"), m_iStage);
 	Font(temp.right*0.4 , temp.bottom*0.5, str, 0x00ffffff);
-	if (m_fDeltaTime > 5.0f)
+	if (m_fDeltaTime > 3.0f)
 	{
+		if (m_eGameState == GAME_RE)
+		{
+			m_Backgrd.backBgd();
+			m_enemy.backEnemy();
+		}
 		m_eGameState = GAME_PLAY;
 		m_player.SetLife();
 		m_dwLastTime = m_dwCurTime;
@@ -87,15 +97,23 @@ void GameManager::Stage()
 
 void GameManager::Collision()
 {
+	m_dwCurTime = GetTickCount();
+	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
+
 	if (m_enemy.Collision(m_player.GetPlayerRct()))
 	{
 		if (m_player.GetState() != JUMP)
 		{
-			m_player.SetPlayerMotion(PLAYER_DIE);
-			m_eGameState = GAME_STOP;
-			InvalidateRect(m_hWnd, NULL, TRUE);
-			UpdateWindow(m_hWnd);
-			Stage();
+			
+				m_player.SetPlayerMotion(PLAYER_DIE);
+				m_eGameState = GAME_STOP;
+				if (m_fDeltaTime > 2.0f)
+				{
+					m_eGameState = GAME_RE;
+					InvalidateRect(m_hWnd, NULL, TRUE);
+					m_dwLastTime = m_dwCurTime;
+				}
+			
 		}
 	}
 }
@@ -121,14 +139,13 @@ void GameManager::TextRender() // 윈도우 작업영역 기준으로 바꾸기
 {
 	TCHAR str[128];
 	HDC hdc = GetDC(m_hWnd);
-	if (m_eGameState == GAME_START)
+	if (m_eGameState != GAME_PLAY)
 	{
 		wsprintf(str, TEXT("1P-"));
 		Font(70, 40, str, 0x00ffffff);
-
-		wsprintf(str, TEXT("-%d"), m_iBonus);
-		Font(270, 60, str, 0x00ffffff);
 	}
+	wsprintf(str, TEXT("-%d"), m_iBonus);
+	Font(270, 60, str, 0x00ffffff);
 
 	wsprintf(str, TEXT("STAGE-%02d"), m_iStage);
 	Font(350, 40, str, 0x00ffffff);

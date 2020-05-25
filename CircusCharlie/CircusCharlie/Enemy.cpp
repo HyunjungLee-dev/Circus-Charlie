@@ -22,7 +22,7 @@ void Enemy::SetJar()
 		if (i != 0)
 			Jar.back()->pos.m_fX = Jar.front()->pos.m_fX + DISTANCE * i;
 		else
-			Jar.back()->pos.m_fX = 970.0f;
+			Jar.back()->pos.m_fX = 960.0;
 		Jar.back()->pos.m_fY= 350.0;
 
 		Jar.back()->type = FIRE_JAR;
@@ -129,6 +129,17 @@ void Enemy::Update(END end)
 			Ring.erase(iter);
 			break;
 		}
+	}
+
+	UpdateRectPos();
+}
+
+
+void Enemy::backEnemy()
+{
+	for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
+	{
+		(*iter)->pos.m_fX += DISTANCE * 0.7;
 	}
 
 	UpdateRectPos();

@@ -98,6 +98,26 @@ void Background::Update()
 	}
 }
 
+void Background::backBgd()
+{
+	for (list<POS*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
+	{
+		(*iter)->m_fX += DISTANCE*0.7;
+	}
+
+	for (vector<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
+	{
+		(*iter)->m_fX += DISTANCE * 0.7;
+
+	}
+
+	for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+	{
+		(*iter)->m_fX += DISTANCE * 0.7;
+	}
+	podium.m_fX += DISTANCE * 0.7;
+}
+
 void Background::Render()
 {
 	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();

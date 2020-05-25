@@ -17,6 +17,7 @@ public:
 	void Init(int x, int y);
 	void Update();
 	void Render();
+	void backBgd();
 	float GetMitterPos(int index);
 	void Clear(list<POS*> lst);
 	void Clear(vector<POS*> v);
