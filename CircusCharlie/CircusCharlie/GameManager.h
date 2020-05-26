@@ -31,6 +31,7 @@ public:
 	void Update();
 	void TextUpdate();
 	void Font(int x, int y, TCHAR *str, COLORREF color);
+	void End();
 	void TextRender();
 	void Stage();
 	void Collision();

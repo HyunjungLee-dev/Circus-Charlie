@@ -146,9 +146,9 @@ void Player::Update(END state)
 		}
 
 		 if(m_eDirection == DIRECTION_NONE)
-			 m_pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 120;
+			 m_pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 110;
 		 else
-			 m_pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI) * 120;
+			 m_pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI) * 110;
 
 		if (m_fCurJumpTime > 1.0f)
 		{

@@ -57,6 +57,7 @@ void GameManager::Update()
 		{
 			m_enemy.Update(ENDLINE);
 			m_player.Update(ENDLINE);
+			Collision();
 			Render();
 			return;
 		}
@@ -69,7 +70,7 @@ void GameManager::Update()
 	}
 }
 
-void GameManager::Stage()
+void GameManager::Stage()		
 {
 	m_dwCurTime = GetTickCount();
 	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
@@ -83,16 +84,29 @@ void GameManager::Stage()
 	Font(temp.right*0.4 , temp.bottom*0.5, str, 0x00ffffff);
 	if (m_fDeltaTime > 3.0f)
 	{
-		if (m_eGameState == GAME_RE)
+		if (m_eGameState == GAME_RE)  // 100M의 경우 예외처리 필요 
 		{
-			m_Backgrd.backBgd();
-			m_enemy.backEnemy();
+			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(1)*0.35)
+			{
+				m_enemy.backRing();
+			}
+			else
+			{
+				m_Backgrd.backBgd();
+				m_enemy.backRing();//고리의 경우 겹치는 경우있음
+				m_enemy.backEnemy();
+			}
 		}
 		m_eGameState = GAME_PLAY;
 		m_player.SetLife();
 		m_dwLastTime = m_dwCurTime;
-		
 	}
+}
+
+void GameManager::End()
+{
+	//player가 점프 상태일때 podium과 충돌이 있으면
+	//player podium 위로 y좌표 고정 후 모션 변경
 }
 
 void GameManager::Collision()
@@ -104,15 +118,14 @@ void GameManager::Collision()
 	{
 		if (m_player.GetState() != JUMP)
 		{
-			
-				m_player.SetPlayerMotion(PLAYER_DIE);
-				m_eGameState = GAME_STOP;
-				if (m_fDeltaTime > 2.0f)
-				{
-					m_eGameState = GAME_RE;
-					InvalidateRect(m_hWnd, NULL, TRUE);
-					m_dwLastTime = m_dwCurTime;
-				}
+			m_player.SetPlayerMotion(PLAYER_DIE);
+			m_eGameState = GAME_STOP;
+			if (m_fDeltaTime > 2.0f)
+			{
+				m_eGameState = GAME_RE;
+				InvalidateRect(m_hWnd, NULL, TRUE);
+				m_dwLastTime = m_dwCurTime;
+			}
 			
 		}
 	}

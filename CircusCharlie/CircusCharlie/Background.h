@@ -8,6 +8,7 @@ private:
 	list<POS*> Audience;
 	vector<POS*> Mitter;
 	list<POS*> _Distance;
+
 	POS podium;
 	RECT Rctpodium;
 public:
@@ -19,6 +20,7 @@ public:
 	void Render();
 	void backBgd();
 	float GetMitterPos(int index);
+	bool Collision();
 	void Clear(list<POS*> lst);
 	void Clear(vector<POS*> v);
 	void Release();

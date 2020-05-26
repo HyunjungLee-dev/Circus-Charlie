@@ -40,8 +40,15 @@ void Enemy::UpdateRectPos()
 	{
 		(*iter)->FireRect.left = (*iter)->pos.m_fX * 1.2;
 		(*iter)->FireRect.top = (*iter)->pos.m_fY;
-		(*iter)->FireRect.right = ((*iter)->FireRect.left +( BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cx)*0.3);
+		(*iter)->FireRect.right = ((*iter)->FireRect.left + (BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cx)*0.3);
 		(*iter)->FireRect.bottom = (*iter)->FireRect.top + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cy;
+	}
+	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
+	{
+		Ring.back()->FireRect.left = Ring.back()->pos.m_fX;
+		Ring.back()->FireRect.top = Ring.back()->pos.m_fY;
+		Ring.back()->FireRect.right = Ring.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cx;
+		Ring.back()->FireRect.bottom = Ring.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cy*1.2;
 	}
 }
 
@@ -120,7 +127,7 @@ void Enemy::Update(END end)
 
 	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
 	{
-			(*iter)->pos.m_fX -= LENGTH;
+		(*iter)->pos.m_fX -= LENGTH;
 		Motion((*iter));
 		if ((*iter)->pos.m_fX < 0.0f)
 		{
@@ -134,6 +141,16 @@ void Enemy::Update(END end)
 	UpdateRectPos();
 }
 
+void Enemy::backRing()
+{
+	if (Ring.empty())
+		return;
+	list<Fire*>::iterator tmp = Ring.begin();
+	Ring.erase(++tmp);
+	Ring.erase(Ring.begin());
+
+	UpdateRectPos();
+}
 
 void Enemy::backEnemy()
 {
@@ -156,6 +173,15 @@ bool Enemy::Collision(RECT rect)
 			return true;
 		}
 	}
+
+	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
+	{
+		if (IntersectRect(&rcTemp, &(*iter)->FireRect, &rect))
+		{
+			return true;
+		}
+	}
+
 	return false;
 }
 

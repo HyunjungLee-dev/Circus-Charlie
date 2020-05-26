@@ -28,6 +28,7 @@ public:
 	void Update(END end);
 	void UpdateRectPos();
 	void Motion(Fire* f);
+	void backRing();
 	bool Collision(RECT rect);
 	void backEnemy();
 
