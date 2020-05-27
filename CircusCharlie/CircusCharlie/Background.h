@@ -4,6 +4,10 @@
 class Background
 {
 private:
+	DWORD		m_dwLastTime;
+	DWORD		m_dwCurTime;
+	float		m_fDeltaTime;
+
 	list<POS*> Field;
 	list<POS*> Audience;
 	vector<POS*> Mitter;
@@ -13,6 +17,8 @@ private:
 
 	POS podium;
 	RECT Rctpodium;
+
+	BACKGROUND_IMG m_eENDImg;
 public:
 	Background();
 	~Background();
@@ -20,10 +26,13 @@ public:
 	void Init(int x, int y);
 	void Update();
 	void Render();
+	void UpdateRectPos();
 	void backBgd(float pos);
 	float GetMitterPos(int index);
 	float GetBacklength() { return backlength; }
 	void CheckDistacne(float pos);
+	bool EndCheck(RECT rect);
+	void EndMotion();
 	void Clear(list<POS*> lst);
 	void Clear(vector<POS*> v);
 	void Release();

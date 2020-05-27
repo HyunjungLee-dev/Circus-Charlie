@@ -1,5 +1,7 @@
 #pragma once
 #include<windows.h>
+#include<cstdlib>
+#include<time.h>
 #include<vector>
 #include<list>
 #include<math.h>
@@ -20,6 +22,12 @@ enum END
 	ENDLINE,
 	ENDPOS,
 	NOTEND,
+};
+
+enum ITEM
+{
+	NONE,
+	HAVE,
 };
 
 enum TYPE
@@ -53,7 +61,19 @@ enum PLAYERSTATE
 {
 	IDLE,
 	MOVE,
-	JUMP
+	JUMP,
+	P_END,
+};
+
+
+enum PASS
+{
+	PASS_NOT,
+	PASS_JAR = 200,
+	PASS_RING = 100,
+	PASS_DOUBLE,
+	PASS_BONOUS = 100,
+	PASS_ITEMRING = 1000,
 };
 
 enum FIRE_IMG
@@ -66,8 +86,6 @@ enum FIRE_IMG
 	FIRE_HALF_RIGHT,
 	FIRE_HALF_RIGHTB,
 	FIRE_ITEM,
-	FIRE_ITEM_LEFT,
-	FIRE_ITEM_RIGHT,
 	FIRE_JAR,
 	FIRE_JARB,
 	FIRE_END 

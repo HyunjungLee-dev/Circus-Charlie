@@ -15,8 +15,7 @@ private:
 	float		m_fJumpY;
 
 	int m_iLife;
-	POS m_pos;
-	POS m_ViewPos;
+	POS m_Pos;
 	RECT m_playerRect;
 	PLAYER_IMG m_ePlayImg;
 	PLAYERSTATE m_eState;
@@ -37,6 +36,6 @@ public:
 	void SetPlayerMotion(PLAYER_IMG m) {  m_ePlayImg = m; }
 	void SetLife() { m_iLife--; }
 	int GetLife() {return m_iLife;}
-	float GetPlayX() { return m_pos.m_fX; }
+	float GetPlayX() { return m_Pos.m_fX; }
 };
 

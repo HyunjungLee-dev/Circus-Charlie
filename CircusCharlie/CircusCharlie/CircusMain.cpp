@@ -12,6 +12,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 	WNDCLASS WndClass;
 	g_hInst = hInstance;
 	RECT rt = { 0, 0, 512 ,448 }; 
+	srand((unsigned int)time(NULL));
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, false);
 	WndClass.cbClsExtra = 0;
 	WndClass.cbWndExtra = 0;

@@ -19,6 +19,8 @@ void GameManager::Init(HWND hWnd)
 	m_iScore = 0;
 	m_iHI = 20000;
 	m_state = { 0,0,514,100 };
+	Passcheck = PASS_NOT;
+	Ringtype = false;
 
 	BitMapManager::GetSingleton()->Init(hWnd);
 	m_Backgrd.Init(0, 100);
@@ -39,6 +41,15 @@ void GameManager::Update()
 	{
 		Stage();
 	}
+	else if (m_eGameState == GAME_END)
+	{
+		m_player.Update(ENDPOS);
+		m_Backgrd.EndMotion();
+		m_enemy.backRing();
+		EndScore();
+		TextRender();
+		Render();
+	}
 	else if (m_eGameState == GAME_PLAY) // 게임 플레이
 	{
 		TextUpdate();
@@ -48,7 +59,8 @@ void GameManager::Update()
 			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(0)*0.35)
 			{
 				m_enemy.Update(NOTEND);
-				Collision();
+				//Collision();
+				EnemyPass();
 				Render();
 				return;
 			}
@@ -57,8 +69,10 @@ void GameManager::Update()
 		if (m_player.GetPlayX() > m_Backgrd.GetMitterPos(9))
 		{
 			m_enemy.Update(ENDLINE);
-			m_player.Update(ENDLINE);
-			Collision();
+			End();
+			m_Backgrd.CheckDistacne(m_player.GetPlayX());
+			//Collision();
+			EnemyPass();
 			Render();
 			return;
 		}
@@ -67,7 +81,8 @@ void GameManager::Update()
 		m_player.Update(NOTEND);
 		m_Backgrd.CheckDistacne(m_player.GetPlayX());
 		m_Backgrd.Update();
-		Collision();
+	//	Collision();
+		EnemyPass();
 		Render();
 	}
 }
@@ -86,7 +101,7 @@ void GameManager::Stage()
 	Font(temp.right*0.4 , temp.bottom*0.5, str, 0x00ffffff);
 	if (m_fDeltaTime > 3.0f)
 	{
-		if (m_eGameState == GAME_RE)  // 100M의 경우 예외처리 필요 
+		if (m_eGameState == GAME_RE)  
 		{
 
 			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(0)*0.35)
@@ -96,20 +111,101 @@ void GameManager::Stage()
 			else
 			{
 				m_Backgrd.backBgd(m_player.GetPlayX());
-				m_enemy.backRing();//고리의 경우 겹치는 경우있음
+				m_enemy.backRing();
 				m_enemy.backEnemy(m_Backgrd.GetBacklength());
 			}
 		}
 		m_eGameState = GAME_PLAY;
 		m_player.SetLife();
+		Passcheck = PASS_NOT;
 		m_dwLastTime = m_dwCurTime;
 	}
 }
 
+void GameManager::EnemyPass() 
+{
+	PASS Rpatype, Jpatype;
+
+	if (m_player.GetState() == IDLE && Passcheck != PASS_NOT)
+	{
+		switch (Passcheck)
+		{
+		case PASS_JAR:
+			m_iScore += (int)PASS_JAR;
+			break;
+		case PASS_RING:
+			m_iScore += (int)PASS_RING;
+			break;
+		case PASS_DOUBLE:
+			if (Ringtype)
+			{
+				m_iScore += (int)(PASS_RING + PASS_JAR + PASS_ITEMRING + PASS_BONOUS);
+				Ringtype = false;
+			}
+			else
+				m_iScore += (int)(PASS_RING + PASS_JAR + PASS_BONOUS);
+			break;
+		case PASS_ITEMRING:
+			m_iScore += (int)(PASS_RING + PASS_ITEMRING);
+			break;
+
+		}
+		Passcheck = PASS_NOT;
+	}
+
+	if (m_player.GetState() == JUMP)
+	{
+		Rpatype = m_enemy.RingPassCheck(m_player.GetPlayX());
+		Jpatype = m_enemy.PassCheck(m_player.GetPlayX());
+
+		if (Passcheck != PASS_DOUBLE)
+		{
+		
+			if(Jpatype != PASS_NOT)
+				Passcheck = PASS_JAR;
+			if (Rpatype == PASS_ITEMRING)
+			{
+				Passcheck = PASS_ITEMRING;
+			}
+			else if (Rpatype == PASS_RING)
+			{
+				Passcheck = PASS_RING;
+			}
+		}
+		if (Rpatype != PASS_NOT && Jpatype != PASS_NOT)
+		{
+			if (Rpatype == PASS_ITEMRING)
+			{
+				Ringtype = true;
+			}
+			Passcheck = PASS_DOUBLE;
+		}
+	}
+
+	
+}
+
+void GameManager::EndScore()
+{
+	int tmp = m_iBonus;
+	if (tmp != 0)
+	{
+		tmp -= 10;
+		m_iScore += 10;
+	}
+	if (m_iBonus != 0)
+		m_iBonus -= 10;
+}
+
 void GameManager::End()
 {
-	//player가 점프 상태일때 podium과 충돌이 있으면
-	//player podium 위로 y좌표 고정 후 모션 변경
+	if (m_Backgrd.EndCheck(m_player.GetPlayerRct()))
+	{
+		m_eGameState = GAME_END;
+		m_player.Update(ENDPOS);
+	}
+	else
+		m_player.Update(ENDLINE);
 }
 
 void GameManager::Collision()
@@ -128,6 +224,7 @@ void GameManager::Collision()
 			m_dwLastTime = m_dwCurTime;
 		}
 	}
+
 
 }
 

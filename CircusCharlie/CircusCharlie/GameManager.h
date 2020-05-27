@@ -19,6 +19,8 @@ private:
 	int m_iHI;
 
 	int m_iDistance;
+	PASS Passcheck;
+	bool Ringtype;
 
 	Background m_Backgrd;
 	Player m_player;
@@ -34,6 +36,8 @@ public:
 	void End();
 	void TextRender();
 	void Stage();
+	void EndScore();
+	void EnemyPass();
 	void Collision();
 	void Release();
 	void Render();

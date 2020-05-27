@@ -5,6 +5,7 @@ struct  Fire
 {
 	POS pos;
 	FIRE_IMG type;
+	ITEM Item;
 	RECT FireRect;
 };
 
@@ -31,6 +32,9 @@ public:
 	void backRing();
 	bool Collision(RECT rect);
 	void backEnemy(float back);
+	void ResetItem();
+	PASS PassCheck(float x);
+	PASS RingPassCheck(float x);
 
 	void Render();
 	void HalfRender();

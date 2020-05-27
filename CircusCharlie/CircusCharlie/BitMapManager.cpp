@@ -36,9 +36,7 @@ void BitMapManager::FireImgLoad()
 	m_pFire[FIRE_HALF_LEFTB].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_1b.bmp");
 	m_pFire[FIRE_HALF_RIGHT].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_f.bmp");
 	m_pFire[FIRE_HALF_RIGHTB].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_1f.bmp");
-	m_pFire[FIRE_ITEM].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_l.bmp");
-	m_pFire[FIRE_ITEM_LEFT].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_l_b.bmp");
-	m_pFire[FIRE_ITEM_RIGHT].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_l_f.bmp");
+	m_pFire[FIRE_ITEM].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//cash.bmp");
 	m_pFire[FIRE_JAR].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//front.bmp");
 	m_pFire[FIRE_JARB].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//front2.bmp");
 }

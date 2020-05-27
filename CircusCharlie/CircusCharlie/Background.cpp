@@ -8,6 +8,8 @@ Background::Background()
 
 void Background::Init(int x, int y)
 {
+	m_dwLastTime = GetTickCount();
+	m_dwCurTime = GetTickCount();
 
 	for (int i = START_POINT; i < AUDIENCE_END; i++)
 	{
@@ -39,6 +41,8 @@ void Background::Init(int x, int y)
 
 	podium.m_fX = Mitter.back()->m_fX;
 	podium.m_fY = 350;
+
+	m_eENDImg = BACK_NOMAL0;
 }
 
 void Background::Update()
@@ -95,6 +99,7 @@ void Background::Update()
 
 		podium.m_fX-= LENGTH;
 	}
+	UpdateRectPos();
 }
 
 
@@ -108,9 +113,42 @@ void Background::CheckDistacne(float pos)
 
 }
 
+void Background::EndMotion()
+{
+	m_dwCurTime = GetTickCount();
+	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
+
+	if (m_fDeltaTime > 0.08f)
+	{
+		switch (m_eENDImg)
+		{
+		case BACK_NOMAL0:
+			m_eENDImg = BACK_NOMAL1;
+			break;
+		case BACK_NOMAL1:
+			m_eENDImg = BACK_NOMAL0;
+			break;
+		}
+		m_dwLastTime = m_dwCurTime;
+	}
+
+}
+
+bool Background::EndCheck(RECT rect)
+{
+	RECT rcTemp = { 0 };
+
+	if (IntersectRect(&rcTemp, &Rctpodium, &rect))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void Background::backBgd(float X)
 {
-	backlength = X - Mitter[NowDistance]->m_fX - 50;
+	backlength = X - Mitter[NowDistance]->m_fX - 60;
 
 	for (list<POS*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
 	{
@@ -148,7 +186,7 @@ void Background::Render()
 		if (AudienceNum == DECO_POINT)
 			BitMapManager::GetSingleton()->GetBackgroud(BACK_DECO).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.3);
 		else
-			BitMapManager::GetSingleton()->GetBackgroud(BACK_NOMAL0).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.3);
+			BitMapManager::GetSingleton()->GetBackgroud(m_eENDImg).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1.3);
 		AudienceNum++;
 		if (AudienceNum == AUDIENCE_END)
 			AudienceNum = 0;
@@ -177,6 +215,14 @@ void Background::Render()
 	BitMapManager::GetSingleton()->GetBackgroud(BACK_PODIUM).Draw(hdc, podium.m_fX, podium.m_fY, 1,1);
 	SelectObject(hdc, OldFont);
 	DeleteObject(hFont);
+}
+
+void Background::UpdateRectPos()
+{
+	Rctpodium.left= podium.m_fX;
+	Rctpodium.top = podium.m_fY;
+	Rctpodium.right = Rctpodium.left + BitMapManager::GetSingleton()->GetBackgroud(BACK_PODIUM).GetSize().cx;
+	Rctpodium.bottom = Rctpodium.top + BitMapManager::GetSingleton()->GetBackgroud(BACK_PODIUM).GetSize().cy;
 }
 
 float Background::GetMitterPos(int index)
