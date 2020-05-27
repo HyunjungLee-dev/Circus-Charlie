@@ -48,6 +48,7 @@ void GameManager::Update()
 			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(0)*0.35)
 			{
 				m_enemy.Update(NOTEND);
+				Collision();
 				Render();
 				return;
 			}
@@ -64,6 +65,7 @@ void GameManager::Update()
 		
 		m_enemy.Update(NOTEND);
 		m_player.Update(NOTEND);
+		m_Backgrd.CheckDistacne(m_player.GetPlayX());
 		m_Backgrd.Update();
 		Collision();
 		Render();
@@ -86,15 +88,16 @@ void GameManager::Stage()
 	{
 		if (m_eGameState == GAME_RE)  // 100M의 경우 예외처리 필요 
 		{
-			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(1)*0.35)
+
+			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(0)*0.35)
 			{
 				m_enemy.backRing();
 			}
 			else
 			{
-				m_Backgrd.backBgd();
+				m_Backgrd.backBgd(m_player.GetPlayX());
 				m_enemy.backRing();//고리의 경우 겹치는 경우있음
-				m_enemy.backEnemy();
+				m_enemy.backEnemy(m_Backgrd.GetBacklength());
 			}
 		}
 		m_eGameState = GAME_PLAY;
@@ -116,19 +119,16 @@ void GameManager::Collision()
 
 	if (m_enemy.Collision(m_player.GetPlayerRct()))
 	{
-		if (m_player.GetState() != JUMP)
+		m_player.SetPlayerMotion(PLAYER_DIE);
+		m_eGameState = GAME_STOP;
+		if (m_fDeltaTime > 2.0f)
 		{
-			m_player.SetPlayerMotion(PLAYER_DIE);
-			m_eGameState = GAME_STOP;
-			if (m_fDeltaTime > 2.0f)
-			{
-				m_eGameState = GAME_RE;
-				InvalidateRect(m_hWnd, NULL, TRUE);
-				m_dwLastTime = m_dwCurTime;
-			}
-			
+			m_eGameState = GAME_RE;
+			InvalidateRect(m_hWnd, NULL, TRUE);
+			m_dwLastTime = m_dwCurTime;
 		}
 	}
+
 }
 
 void GameManager::Font(int x, int y, TCHAR *str, COLORREF color)

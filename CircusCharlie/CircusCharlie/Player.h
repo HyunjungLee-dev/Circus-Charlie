@@ -29,6 +29,7 @@ public:
 	void Move(END state);
 	void Motion();
 	void Render();
+	void UpdateRct();
 	void Update(END state);
 
 	RECT GetPlayerRct() { return m_playerRect; }

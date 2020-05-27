@@ -30,7 +30,7 @@ public:
 	void Motion(Fire* f);
 	void backRing();
 	bool Collision(RECT rect);
-	void backEnemy();
+	void backEnemy(float back);
 
 	void Render();
 	void HalfRender();

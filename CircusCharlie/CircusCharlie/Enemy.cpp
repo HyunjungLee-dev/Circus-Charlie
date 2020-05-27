@@ -26,12 +26,8 @@ void Enemy::SetJar()
 		Jar.back()->pos.m_fY= 350.0;
 
 		Jar.back()->type = FIRE_JAR;
-
-		Jar.back()->FireRect.left = Jar.back()->pos.m_fX;
-		Jar.back()->FireRect.top = Jar.back()->pos.m_fY;
-		Jar.back()->FireRect.right = Jar.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cx;
-		Jar.back()->FireRect.bottom = Jar.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Jar.back()->type).GetSize().cy;
 	}
+	UpdateRectPos();
 }
 
 void Enemy::UpdateRectPos()
@@ -45,10 +41,10 @@ void Enemy::UpdateRectPos()
 	}
 	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
 	{
-		Ring.back()->FireRect.left = Ring.back()->pos.m_fX;
-		Ring.back()->FireRect.top = Ring.back()->pos.m_fY;
-		Ring.back()->FireRect.right = Ring.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cx;
-		Ring.back()->FireRect.bottom = Ring.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cy*1.2;
+		(*iter)->FireRect.left = (*iter)->pos.m_fX * 1.3;
+		(*iter)->FireRect.top = (*iter)->pos.m_fY * 1.8 ;
+		(*iter)->FireRect.right = (*iter)->FireRect.left + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cx*0.8;
+		(*iter)->FireRect.bottom = (*iter)->FireRect.top + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cy*0.2;
 	}
 }
 
@@ -73,17 +69,13 @@ void Enemy::SetRing()
 			}
 			else
 			{
-				Ring.back()->pos.m_fX = 512 + BitMapManager::GetSingleton()->GetFire(FIRE_HALF_LEFT).GetSize().cx;;
+				Ring.back()->pos.m_fX = 512 + BitMapManager::GetSingleton()->GetFire(FIRE_HALF_LEFT).GetSize().cx;
 				Ring.back()->pos.m_fY = 180;
 				Ring.back()->type = FIRE_HALF_RIGHT;
 			}
-			Ring.back()->FireRect.left = Ring.back()->pos.m_fX;
-			Ring.back()->FireRect.top = Ring.back()->pos.m_fY;
-			Ring.back()->FireRect.right = Ring.back()->FireRect.left + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cx;
-			Ring.back()->FireRect.bottom = Ring.back()->FireRect.top + BitMapManager::GetSingleton()->GetFire(Ring.back()->type).GetSize().cy;
-
 			m_dwLastTime = m_dwCurTime;
 		}
+		UpdateRectPos();
 	}
 
 }
@@ -143,24 +135,22 @@ void Enemy::Update(END end)
 
 void Enemy::backRing()
 {
-	if (Ring.empty())
-		return;
-	list<Fire*>::iterator tmp = Ring.begin();
-	Ring.erase(++tmp);
-	Ring.erase(Ring.begin());
-
-	UpdateRectPos();
+	Ring.clear();
 }
 
-void Enemy::backEnemy()
+
+void Enemy::backEnemy(float back)
 {
+
 	for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
 	{
-		(*iter)->pos.m_fX += DISTANCE * 0.7;
+		(*iter)->pos.m_fX += back;
 	}
 
 	UpdateRectPos();
 }
+
+
 
 bool Enemy::Collision(RECT rect)
 {
@@ -176,12 +166,14 @@ bool Enemy::Collision(RECT rect)
 
 	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
 	{
-		if (IntersectRect(&rcTemp, &(*iter)->FireRect, &rect))
+		if ((*iter)->type == FIRE_HALF_LEFT || (*iter)->type == FIRE_HALF_LEFTB)
 		{
-			return true;
+			if (IntersectRect(&rcTemp, &(*iter)->FireRect, &rect))
+			{
+				return true;
+			}
 		}
 	}
-
 	return false;
 }
 
@@ -223,6 +215,8 @@ void Enemy::Render()
 
 	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
 	{
+		//RECT rct = (*iter)->FireRect;
+		//Rectangle(hdc, rct.left, rct.top, rct.right, rct.bottom);
 		BitMapManager::GetSingleton()->GetFire((*iter)->type).Draw(hdc, (*iter)-> pos.m_fX, (*iter)-> pos.m_fY,1,1.2);
 	}
 

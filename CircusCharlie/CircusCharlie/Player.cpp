@@ -121,6 +121,13 @@ void Player::Motion()
 
 }
 
+void Player::UpdateRct()
+{
+	m_playerRect.left = m_pos.m_fX;
+	m_playerRect.top = m_pos.m_fY;
+	m_playerRect.right = m_playerRect.left + BitMapManager::GetSingleton()->GetPlayer(PLAYER_MOVE0).GetSize().cx;
+	m_playerRect.bottom = m_playerRect.top + BitMapManager::GetSingleton()->GetPlayer(PLAYER_MOVE0).GetSize().cy;
+}
 
 
 void Player::Update(END state)
@@ -157,6 +164,7 @@ void Player::Update(END state)
 			m_eState = IDLE;
 			m_eDirection = DIRECTION_NONE;
 		}
+		UpdateRct();
 	}
 
 	Motion();

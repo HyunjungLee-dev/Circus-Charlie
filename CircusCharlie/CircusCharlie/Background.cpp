@@ -39,7 +39,6 @@ void Background::Init(int x, int y)
 
 	podium.m_fX = Mitter.back()->m_fX;
 	podium.m_fY = 350;
-
 }
 
 void Background::Update()
@@ -59,7 +58,7 @@ void Background::Update()
 
 		}
 
-		for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+		for (vector<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
 		{
 			(*iter)->m_fX += LENGTH;
 		}
@@ -89,7 +88,7 @@ void Background::Update()
 			(*iter)->m_fX -= LENGTH;
 		}
 
-		for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+		for (vector<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
 		{
 			(*iter)->m_fX -= LENGTH;
 		}
@@ -98,25 +97,40 @@ void Background::Update()
 	}
 }
 
-void Background::backBgd()
+
+void Background::CheckDistacne(float pos)
 {
+	for (int i = 0; i < 11; i++)
+	{
+		if (pos > Mitter[i]->m_fX + BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).GetSize().cx)
+			NowDistance = i;
+	}
+
+}
+
+void Background::backBgd(float X)
+{
+	backlength = X - Mitter[NowDistance]->m_fX - 50;
+
 	for (list<POS*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
 	{
-		(*iter)->m_fX += DISTANCE*0.7;
+		(*iter)->m_fX += backlength;
 	}
 
 	for (vector<POS*>::iterator iter = Mitter.begin(); iter != Mitter.end(); iter++)
 	{
-		(*iter)->m_fX += DISTANCE * 0.7;
+		(*iter)->m_fX += backlength;
 
 	}
 
-	for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+	for (vector<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
 	{
-		(*iter)->m_fX += DISTANCE * 0.7;
+		(*iter)->m_fX += backlength;
 	}
-	podium.m_fX += DISTANCE * 0.7;
+	podium.m_fX += backlength;
 }
+
+
 
 void Background::Render()
 {
@@ -149,7 +163,7 @@ void Background::Render()
 	{
 		BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).Draw(hdc, (*iter)->m_fX, (*iter)->m_fY, 1);
 	}
-	for (list<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
+	for (vector<POS*>::iterator iter = _Distance.begin(); iter != _Distance.end(); iter++)
 	{
 		if(Distance == 0)
 			wsprintf(str, TEXT("00"));

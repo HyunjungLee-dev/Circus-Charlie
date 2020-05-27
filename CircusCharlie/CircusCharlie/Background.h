@@ -7,7 +7,9 @@ private:
 	list<POS*> Field;
 	list<POS*> Audience;
 	vector<POS*> Mitter;
-	list<POS*> _Distance;
+	vector<POS*> _Distance;
+	int NowDistance;
+	float backlength;
 
 	POS podium;
 	RECT Rctpodium;
@@ -18,9 +20,10 @@ public:
 	void Init(int x, int y);
 	void Update();
 	void Render();
-	void backBgd();
+	void backBgd(float pos);
 	float GetMitterPos(int index);
-	bool Collision();
+	float GetBacklength() { return backlength; }
+	void CheckDistacne(float pos);
 	void Clear(list<POS*> lst);
 	void Clear(vector<POS*> v);
 	void Release();
