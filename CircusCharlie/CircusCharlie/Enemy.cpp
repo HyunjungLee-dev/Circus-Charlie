@@ -196,6 +196,7 @@ PASS Enemy::RingPassCheck(float x)
 		{
 			if ((*iter)->Item == HAVE)
 			{
+				ResetRing = (*iter);
 				return PASS_ITEMRING;
 			}
 			return PASS_RING;
@@ -206,13 +207,14 @@ PASS Enemy::RingPassCheck(float x)
 
 void Enemy::ResetItem()
 {
-	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
+	if (ResetRing != NULL)
 	{
-		if ((*iter)->Item == HAVE)
+		if (ResetRing->Item == HAVE)
 		{
-			(*iter)->Item = NONE;
+			ResetRing->Item = NONE;
 		}
 	}
+
 }
 
 bool Enemy::Collision(RECT rect)
@@ -273,15 +275,12 @@ void Enemy::Render()
 
 	for (list<Fire*>::iterator iter = Jar.begin(); iter != Jar.end(); iter++)
 	{
-		/*RECT rct = (*iter)->FireRect;
-		Rectangle(hdc, rct.left, rct.top, rct.right, rct.bottom);*/
+
 		BitMapManager::GetSingleton()->GetFire((*iter)->type).Draw(hdc, (*iter)->pos.m_fX, (*iter)->pos.m_fY,1,1);
 	}
 
 	for (list<Fire*>::iterator iter = Ring.begin(); iter != Ring.end(); iter++)
 	{
-	/*	RECT rct = (*iter)->FireRect;
-		Rectangle(hdc, rct.left, rct.top, rct.right, rct.bottom);*/
 		BitMapManager::GetSingleton()->GetFire((*iter)->type).Draw(hdc, (*iter)-> pos.m_fX, (*iter)-> pos.m_fY,1,1.2);
 	}
 
@@ -300,24 +299,16 @@ void Enemy::HalfRender()
 	}
 }
 
-void Enemy::Clear(list<Fire*> l)
-{
-	for (list<Fire*>::iterator it = l.begin(); it != l.end(); it++)
-	{
-		delete (*it);
 
-	}
-	l.clear();
-}
 
 void Enemy::Release()
 {
-	Clear(Ring);
-	Clear(Jar);
+	Ring.clear();
+	Jar.clear();
+
 }
 
 
 Enemy::~Enemy()
 {
-	Release();
 }

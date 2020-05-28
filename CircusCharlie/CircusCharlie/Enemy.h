@@ -18,6 +18,7 @@ private:
 
 	list<Fire*> Ring;
 	list<Fire*> Jar;
+	Fire* ResetRing;
 public:
 	Enemy();
 	~Enemy();
@@ -39,7 +40,6 @@ public:
 	void Render();
 	void HalfRender();
 
-	void Clear(list<Fire*> list);
 	void Release();
 };
 

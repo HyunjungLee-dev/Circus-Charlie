@@ -33,8 +33,6 @@ public:
 	void CheckDistacne(float pos);
 	bool EndCheck(RECT rect);
 	void EndMotion();
-	void Clear(list<POS*> lst);
-	void Clear(vector<POS*> v);
 	void Release();
 };
 

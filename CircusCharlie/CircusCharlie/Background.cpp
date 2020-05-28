@@ -148,7 +148,7 @@ bool Background::EndCheck(RECT rect)
 
 void Background::backBgd(float X)
 {
-	backlength = X - Mitter[NowDistance]->m_fX - 60;
+	backlength = X - Mitter[NowDistance]->m_fX - 80;
 
 	for (list<POS*>::iterator iter = Audience.begin(); iter != Audience.end(); iter++)
 	{
@@ -177,6 +177,7 @@ void Background::Render()
 	HFONT hFont, OldFont;
 	hFont = CreateFont(0, 0, 0, 0, 0, 0, 0, 0, OEM_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("Terminal"));
 	OldFont = (HFONT)SelectObject(hdc, hFont);
+
 
 	int AudienceNum = 0;
 	int Distance = 100;
@@ -230,34 +231,17 @@ float Background::GetMitterPos(int index)
 	return Mitter[index]->m_fX + BitMapManager::GetSingleton()->GetBackgroud(BACK_MITER).GetSize().cx * 3;
 }
 
-void Background::Clear(list<POS*> lst)
-{
-	for (list<POS*>::iterator it = lst.begin(); it != lst.end(); it++)
-	{
-		delete (*it);
-
-	}
-	lst.clear();
-}
-
-void Background::Clear(vector<POS*> v)
-{
-	for (vector<POS*>::iterator it = v.begin(); it != v.end(); it++)
-	{
-		delete (*it);
-
-	}
-	v.clear();
-}
 
 void Background::Release()
 {
-	Clear(Field);
-	Clear(Audience);
-	Clear(Mitter);
+
+	Field.clear();
+	Audience.clear();
+	Mitter.clear();
+	_Distance.clear();
+
 }
 
 Background::~Background()
 {
-	Release();
 }

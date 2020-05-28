@@ -2,6 +2,14 @@
 #include"Background.h"
 #include"Player.h"
 #include"Enemy.h"
+
+struct Star
+{
+	ICON_IMG starColor;
+	POS pos;
+};
+
+
 class GameManager
 {
 private:
@@ -25,16 +33,23 @@ private:
 	Background m_Backgrd;
 	Player m_player;
 	Enemy m_enemy;
+	vector<Star*> star;
 public:
 	GameManager();
 	~GameManager();
 
 	void Init(HWND hWnd);
+	void StateReset();
+
+
+
 	void Update();
 	void TextUpdate();
 	void Font(int x, int y, TCHAR *str, COLORREF color);
 	void End();
 	void TextRender();
+	void Title();
+	void TitleStar();
 	void Stage();
 	void EndScore();
 	void EnemyPass();

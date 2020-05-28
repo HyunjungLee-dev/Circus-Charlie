@@ -23,8 +23,6 @@ void Player::Init()
 void Player::Render()
 {
 	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-	//RECT rct = m_playerRect;
-	//Rectangle(hdc, rct.left, rct.top, rct.right, rct.bottom);
 	BitMapManager::GetSingleton()->GetPlayer(m_ePlayImg).Draw(hdc, m_Pos.m_fX, m_Pos.m_fY, 1, 1);
 }
 

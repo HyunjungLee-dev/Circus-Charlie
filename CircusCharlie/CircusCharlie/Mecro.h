@@ -8,7 +8,7 @@
 using namespace std;
 
 #define PI	3.141592f
-#define LENGTH 0.8f
+#define LENGTH 1.2f
 #define DISTANCE 500
 
 struct POS
@@ -16,6 +16,8 @@ struct POS
 	float m_fX;
 	float m_fY;
 };
+
+
 
 enum END
 {
@@ -110,14 +112,18 @@ enum ICON_IMG
 	ICON_STAR_B,
 	ICON_STAR_Y,
 	ICON_STAR_R,
+	ICON_TITLE,
 	ICON_END,
 };
 
 enum GAMESTATE
 {
+	GAME_MAIN,
 	GAME_START,
 	GAME_STOP,
+	GAME_DIE,
 	GAME_RE,
+	GAME_INIT,
 	GAME_PLAY,
 	GAME_END
 };

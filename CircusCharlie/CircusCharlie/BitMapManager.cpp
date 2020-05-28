@@ -57,6 +57,12 @@ void BitMapManager::IconImgLoad()
 	m_pIcon[ICON_STAR_B].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//star.bmp");
 	m_pIcon[ICON_STAR_Y].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//star2.bmp");
 	m_pIcon[ICON_STAR_R].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//star1.bmp");
+	m_pIcon[ICON_TITLE].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//title.bmp");
+}
+
+void BitMapManager::BitRelease()
+{
+	m_BackBuffer.Release();
 }
 
 

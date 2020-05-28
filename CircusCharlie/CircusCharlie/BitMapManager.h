@@ -18,6 +18,7 @@ public:
 	void FireImgLoad();
 	void BackImgLoad();
 	void IconImgLoad();
+	void BitRelease();
 
 	BitMap GetBackBuffer() { return m_BackBuffer; }
 	BitMap  GetBackgroud(BACKGROUND_IMG index) { return m_pBackground[index]; }
