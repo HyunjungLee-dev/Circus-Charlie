@@ -16,7 +16,7 @@ void BitMap::Init(HDC hdc)
 	m_size.cy = bit.bmHeight;
 }
 
-void BitMap::ImgLoad(HDC hdc,LPCWSTR FileName)
+void BitMap::ImgLoad(HDC hdc, LPCWSTR FileName)
 {
 	MemDC = CreateCompatibleDC(hdc);
 	m_BitMap = (HBITMAP)LoadImage(NULL, FileName, IMAGE_BITMAP, 0, 0
@@ -29,13 +29,13 @@ void BitMap::ImgLoad(HDC hdc,LPCWSTR FileName)
 	m_size.cy = bit.bmHeight;
 }
 
-void BitMap::Draw(HDC hdc, int nX, int nY, float sX, float sY)
+void BitMap::Draw(HDC hdc, int nX, int nY, float sX, float sY) // 색상 제거
 {
 	TransparentBlt(hdc, nX, nY, m_size.cx*sX, m_size.cy*sY,
 		MemDC, 0, 0, m_size.cx, m_size.cy, RGB(255, 0, 255));
 }
 
-void BitMap::Draw(HDC hdc, int nX, int nY, float stretch) //전체
+void BitMap::Draw(HDC hdc, int nX, int nY, float stretch) //확대
 {
 	StretchBlt(hdc, nX, nY, m_size.cx*stretch, m_size.cy*stretch, MemDC, 0, 0, m_size.cx, m_size.cy, SRCCOPY);
 }

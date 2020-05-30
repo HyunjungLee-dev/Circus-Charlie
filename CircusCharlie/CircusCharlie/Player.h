@@ -3,7 +3,6 @@
 class Player
 {
 private:
-	
 	DWORD		m_dwLastTime;
 	DWORD		m_dwCurTime;
 	float		m_fDeltaTime;
@@ -14,28 +13,37 @@ private:
 	float		m_fJumpX;
 	float		m_fJumpY;
 
-	int m_iLife;
 	POS m_Pos;
 	RECT m_playerRect;
-	PLAYER_IMG m_ePlayImg;
+	IMG m_ePlayImg;
+
 	PLAYERSTATE m_eState;
 	DIRECTION m_eDirection;
+	END m_eEnd;
+	int m_iLife;
 public:
 	Player();
 	~Player();
 
+	//Init
 	void Init();
-	void Move(END state);
-	void Motion();
-	void Render();
-	void UpdateRct();
-	void Update(END state);
 
-	RECT GetPlayerRct() { return m_playerRect; }
-	PLAYERSTATE GetState() { return m_eState; }
-	void SetPlayerMotion(PLAYER_IMG m) {  m_ePlayImg = m; }
-	void SetLife() { m_iLife--; }
-	int GetLife() {return m_iLife;}
+	//Update
+	void Update(END state);
+	void Move();
+	void Jump();
+	void Motion();
+	void UpdateRct();
+
+	//Render
+	void Render();
+
+	//Release
+	void Release();
+
+	//Getter
+	int GetLife(){ return m_iLife; }
 	float GetPlayX() { return m_Pos.m_fX; }
+	RECT GetPlayerRct() { return m_playerRect; }
 };
 

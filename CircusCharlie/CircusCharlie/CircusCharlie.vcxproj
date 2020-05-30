@@ -20,10 +20,10 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{C0B0E35C-87AE-454D-87D8-CB3C31812711}</ProjectGuid>
+    <ProjectGuid>{0F063360-9CD6-4F45-A4F8-9090CDCC641A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CircusCharlie</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -105,7 +105,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>msimg32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,23 +140,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Background.h" />
-    <ClInclude Include="BitMap.h" />
-    <ClInclude Include="BitMapManager.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="Mecro.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Singleton.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="BitMap.cpp" />
     <ClCompile Include="BitMapManager.cpp" />
     <ClCompile Include="CircusMain.cpp" />
-    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Background.h" />
+    <ClInclude Include="BitMap.h" />
+    <ClInclude Include="BitMapManager.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Mecro.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

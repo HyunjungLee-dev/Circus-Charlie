@@ -1,6 +1,5 @@
 #pragma once
-#include"BitMapManager.h"
-
+#include"Font.h"
 class Background
 {
 private:
@@ -8,31 +7,37 @@ private:
 	DWORD		m_dwCurTime;
 	float		m_fDeltaTime;
 
-	list<POS*> Field;
-	list<POS*> Audience;
-	vector<POS*> Mitter;
-	vector<POS*> _Distance;
-	int NowDistance;
-	float backlength;
+	list<BACKGROUND*> m_Audiencelist;
+	list<BACKGROUND*> m_Fieldlist;
+	vector<MITTER*> m_Mitter;
+	PODIUM m_Podium;
 
-	POS podium;
-	RECT Rctpodium;
-
-	BACKGROUND_IMG m_eENDImg;
+	HDC m_backbufferDC;
+	Font m_Font;
 public:
 	Background();
 	~Background();
 
+	//Init
 	void Init(int x, int y);
+
+	//Update
 	void Update();
-	void Render();
-	void UpdateRectPos();
-	void backBgd(float pos);
-	float GetMitterPos(int index);
-	float GetBacklength() { return backlength; }
-	void CheckDistacne(float pos);
-	bool EndCheck(RECT rect);
+	void Move();
+
+	bool PodiumCheck(RECT rect);
+	void PodiumRctUpdate();
+
 	void EndMotion();
+	//Render
+	void Render();
+
+	//Release
 	void Release();
+	void Clear(vector<MITTER*> v);
+	void Clear(list<BACKGROUND*> list);
+
+	//Getter
+	float GetMitterPos(int index);
 };
 

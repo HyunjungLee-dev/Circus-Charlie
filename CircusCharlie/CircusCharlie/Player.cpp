@@ -6,55 +6,68 @@ Player::Player()
 {
 }
 
+//Init
 void Player::Init()
 {
 	m_Pos.m_fX = 100.0f;
 	m_Pos.m_fY = 335.0f;
 
+	m_iLife = 4;
+	m_ePlayImg = PLAYER_MOVE0;
+
 	m_eState = IDLE;
 	m_eDirection = DIRECTION_NONE;
-	m_iLife = 4;
+
 
 	m_dwLastTime = GetTickCount();
 	m_dwCurTime = GetTickCount();
 	m_fMotionTime = 0.0f;
 }
 
-void Player::Render()
+//Update
+void Player::Update(END state)
 {
-	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-	BitMapManager::GetSingleton()->GetPlayer(m_ePlayImg).Draw(hdc, m_Pos.m_fX, m_Pos.m_fY, 1, 1);
+	m_dwCurTime = GetTickCount();
+	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
+	m_dwLastTime = m_dwCurTime;
+
+	m_eEnd = state;
+
+	Move();
+	Jump();
+	Motion();
+	Render();
 }
 
-void Player::Move(END state)
+void Player::Move()
 {
-	if (state == ENDPOS)
+	if (m_eEnd == ENDPOS)
 		return;
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-		if (state == ENDLINE)
+		if (m_eEnd == ENDLINE)
 		{
 			m_Pos.m_fX -= 100 * m_fDeltaTime;
 		}
-		if (m_eState == IDLE )
+		if (m_eState == IDLE)
 			m_eState = MOVE;
 
-			m_eDirection = DIRECTION_LEFT;
+		m_eDirection = DIRECTION_LEFT;
 
-			
+
 
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
-	{	
-		if (state == ENDLINE)
+	{
+		if (m_eEnd == ENDLINE)
 		{
 			m_Pos.m_fX += 100 * m_fDeltaTime;
 		}
 		if (m_eState == IDLE)
 			m_eState = MOVE;
 
-			m_eDirection = DIRECTION_RIGHT;
+		m_eDirection = DIRECTION_RIGHT;
 	}
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
@@ -67,6 +80,52 @@ void Player::Move(END state)
 	}
 
 	UpdateRct();
+}
+
+void Player::Jump()
+{
+
+	if (m_eState == JUMP)
+	{
+		m_fCurJumpTime += m_fDeltaTime;
+
+		if (m_eEnd == ENDLINE)
+
+		{
+			if (m_eDirection == DIRECTION_LEFT)
+				m_Pos.m_fX -= 100 * m_fDeltaTime;
+			else if (m_eDirection == DIRECTION_RIGHT)
+				m_Pos.m_fX += 100 * m_fDeltaTime;
+		}
+
+		if (m_eEnd != ENDPOS)
+		{
+			if (m_eDirection == DIRECTION_NONE)
+				m_Pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 110;
+			else
+				m_Pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI) * 110;
+		}
+
+		if (m_fCurJumpTime > 1.0f)
+		{
+			m_eState = IDLE;
+			m_eDirection = DIRECTION_NONE;
+			m_fCurJumpTime = 0.0f;
+			if (m_eEnd == ENDPOS)
+			{
+				m_Pos.m_fX = 380.0f;
+				m_Pos.m_fY = 290.0f;
+				m_eState = P_END;
+				m_ePlayImg = PLAYER_WIN0;
+				//Motion();
+				return;
+			}
+			else
+				m_Pos.m_fY = 330.0f;
+		}
+
+		UpdateRct();
+	}
 }
 
 void Player::Motion()
@@ -129,67 +188,23 @@ void Player::UpdateRct()
 {
 	m_playerRect.left = m_Pos.m_fX + 20;
 	m_playerRect.top = m_Pos.m_fY;
-	m_playerRect.right = m_playerRect.left + BitMapManager::GetSingleton()->GetPlayer(PLAYER_MOVE0).GetSize().cx - 40;
-	m_playerRect.bottom = m_playerRect.top + BitMapManager::GetSingleton()->GetPlayer(PLAYER_MOVE0).GetSize().cy - 5;
+	m_playerRect.right = m_playerRect.left + BitMapManager::GetSingleton()->GetImg(m_ePlayImg)->GetSize().cx - 40;
+	m_playerRect.bottom = m_playerRect.top + BitMapManager::GetSingleton()->GetImg(m_ePlayImg)->GetSize().cy - 5;
 }
 
 
-void Player::Update(END state)
+
+//Render
+void Player::Render()
 {
-	m_dwCurTime = GetTickCount();
-	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
-	m_dwLastTime = m_dwCurTime;
-
-	Move(state);
-
-
-	if (m_eState == JUMP)
-	{
-		m_fCurJumpTime += m_fDeltaTime;
-
-		if (state == ENDLINE)
-
-		{
-			if (m_eDirection == DIRECTION_LEFT)
-				m_Pos.m_fX -= 100 * m_fDeltaTime;
-			else if (m_eDirection == DIRECTION_RIGHT)
-				m_Pos.m_fX += 100 * m_fDeltaTime;
-		}
-
-
-
-
-		if (m_fCurJumpTime > 1.0f)
-		{
-			m_eState = IDLE;
-			m_eDirection = DIRECTION_NONE;
-			m_fCurJumpTime = 0.0f;
-			if (state == ENDPOS)
-			{
-				m_Pos.m_fX = 350.0f;
-				m_Pos.m_fY = 290.0f;
-				m_eState = P_END;
-				m_ePlayImg = PLAYER_WIN0;
-				Motion();
-				return;
-			}
-			else
-				m_Pos.m_fY = 330.0f;
-		}
-
-		if (state != ENDPOS)
-		{
-			if (m_eDirection == DIRECTION_NONE)
-				m_Pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI * 1) * 110;
-			else
-				m_Pos.m_fY = m_fJumpY - sinf(m_fCurJumpTime * PI) * 110;
-		}
-
-		UpdateRct();
-	}
-	Motion();
+	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
+	BitMapManager::GetSingleton()->GetImg(m_ePlayImg)->Draw(hdc, m_Pos.m_fX, m_Pos.m_fY, 1, 1);
 }
 
+//Release
+void Player::Release()
+{
+}
 
 Player::~Player()
 {

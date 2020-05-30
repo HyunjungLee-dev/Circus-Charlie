@@ -1,60 +1,56 @@
 #pragma once
+#include"Font.h"
 #include"Background.h"
 #include"Player.h"
-#include"Enemy.h"
-
-struct Star
-{
-	ICON_IMG starColor;
-	POS pos;
-};
-
-
 class GameManager
 {
 private:
-	DWORD		m_dwLastTime;
-	DWORD		m_dwCurTime;
-	float		m_fDeltaTime;
+	DWORD	m_dwLastTime;
+	DWORD	m_dwCurTime;
+	float	m_fDeltaTime;
 
-	HWND	 m_hWnd;
+	float	m_fStartTime;
+	float	m_fTextTime;
+
+	HWND m_hWnd;
+	HDC m_backbufferDC;
+	RECT m_ClientRct;
+
+	Font m_Font;
+
 	GAMESTATE m_eGameState;
-	RECT m_state;
+	GAMESTATE m_eStartCheck;
 
-	int m_iScore; // 구조체로
-	int m_iStage;
-	int m_iBonus;
-	int m_iHI;
-
-	int m_iDistance;
-	PASS Passcheck;
-	bool Ringtype;
+	Stat m_stat;
 
 	Background m_Backgrd;
-	Player m_player;
-	Enemy m_enemy;
-	vector<Star*> star;
+	Player m_Player;
+
+
 public:
 	GameManager();
 	~GameManager();
 
+	//Init
 	void Init(HWND hWnd);
 	void StateReset();
 
-
-
+	//Update
 	void Update();
-	void TextUpdate();
-	void Font(int x, int y, TCHAR *str, COLORREF color);
-	void End();
-	void TextRender();
-	void Title();
-	void TitleStar();
-	void Stage();
+	void MainUpdate();
+	void StatUpdate();
+	void EndLine();
 	void EndScore();
-	void EnemyPass();
-	void Collision();
-	void Release();
+
+	//Render
 	void Render();
+	void Main();
+	void Stage();
+	void StatWindow();
+	void StatBox();
+
+	//Release
+	void Release();
+
 };
 

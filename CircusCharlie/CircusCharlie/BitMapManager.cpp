@@ -1,4 +1,4 @@
-#include "BitMapManager.h"
+#include "BitmapManager.h"
 
 BitMapManager* BitMapManager::_Singleton = NULL;
 
@@ -11,60 +11,77 @@ void BitMapManager::Init(HWND hWnd)
 
 	HDC hdc = GetDC(hWnd);
 	m_BackBuffer.Init(hdc);
-	PlayerImgLoad();
-	FireImgLoad();
-	BackImgLoad();
-	IconImgLoad();
+	BufferDC = m_BackBuffer.GetMemDC();
+	ImgLoad();
 	ReleaseDC(hWnd, hdc);
 }
 
-void BitMapManager::PlayerImgLoad() 
+void BitMapManager::ImgLoad()
 {
-	m_pPlayer[PLAYER_MOVE0].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//player0.bmp");
-	m_pPlayer[PLAYER_MOVE1].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//player1.bmp");
-	m_pPlayer[PLAYER_MOVE2].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//player2.bmp");
-	m_pPlayer[PLAYER_DIE].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//die.bmp");
-	m_pPlayer[PLAYER_WIN0].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//win0.bmp");
-	m_pPlayer[PLAYER_WIN1].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//win1.bmp");
+	for (int i = IMG_START; i < IMG_END; i++)
+	{
+		Imglist.push_back(new BitMap);
+	}
+	PlayerImgLoad();
+	FireImgLoad();
+	BkgImgLoad();
+	IconImgLoad();
+
+}
+
+void BitMapManager::PlayerImgLoad()
+{
+
+	Imglist.at(PLAYER_MOVE0)->ImgLoad(BufferDC, L"Res//player0.bmp");
+	Imglist.at(PLAYER_MOVE1)->ImgLoad(BufferDC, L"Res//player1.bmp");
+	Imglist.at(PLAYER_MOVE2)->ImgLoad(BufferDC, L"Res//player2.bmp");
+	Imglist.at(PLAYER_DIE)->ImgLoad(BufferDC, L"Res//die.bmp");
+	Imglist.at(PLAYER_WIN0)->ImgLoad(BufferDC, L"Res//win0.bmp");
+	Imglist.at(PLAYER_WIN1)->ImgLoad(BufferDC, L"Res//win1.bmp");
+
 }
 
 void BitMapManager::FireImgLoad()
 {
-	m_pFire[FIRE_NOMAL].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy.bmp");
-	m_pFire[FIRE_NOMAL_B].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy1.bmp");
-	m_pFire[FIRE_HALF_LEFT].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_b.bmp");
-	m_pFire[FIRE_HALF_LEFTB].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_1b.bmp");
-	m_pFire[FIRE_HALF_RIGHT].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_f.bmp");
-	m_pFire[FIRE_HALF_RIGHTB].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//enemy_1f.bmp");
-	m_pFire[FIRE_ITEM].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//cash.bmp");
-	m_pFire[FIRE_JAR].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//front.bmp");
-	m_pFire[FIRE_JARB].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//front2.bmp");
+	Imglist.at(FIRE_NOMAL)->ImgLoad(BufferDC, L"Res//enemy.bmp");
+	Imglist.at(FIRE_NOMAL_B)->ImgLoad(BufferDC, L"Res//enemy1.bmp");
+	Imglist.at(FIRE_HALF_LEFT)->ImgLoad(BufferDC, L"Res//enemy_b.bmp");
+	Imglist.at(FIRE_HALF_LEFTB)->ImgLoad(BufferDC, L"Res//enemy_1b.bmp");
+	Imglist.at(FIRE_HALF_RIGHT)->ImgLoad(BufferDC, L"Res//enemy_f.bmp");
+	Imglist.at(FIRE_HALF_RIGHTB)->ImgLoad(BufferDC, L"Res//enemy_1f.bmp");
+	Imglist.at(FIRE_ITEM)->ImgLoad(BufferDC, L"Res//cash.bmp");
+	Imglist.at(FIRE_JAR)->ImgLoad(BufferDC, L"Res//front.bmp");
+	Imglist.at(FIRE_JARB)->ImgLoad(BufferDC, L"Res//front2.bmp");
 }
 
-void BitMapManager::BackImgLoad()
+void BitMapManager::BkgImgLoad()
 {
-	m_pBackground[BACK_WAY].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//back.bmp");
-	m_pBackground[BACK_DECO].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//back_deco.bmp");
-	m_pBackground[BACK_NOMAL0].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//back_normal.bmp");
-	m_pBackground[BACK_NOMAL1].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//back_normal2.bmp");
-	m_pBackground[BACK_PODIUM].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//end.bmp");
-	m_pBackground[BACK_MITER].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//miter.bmp");
+	Imglist.at(BACK_WAY)->ImgLoad(BufferDC, L"Res//back.bmp");
+	Imglist.at(BACK_DECO)->ImgLoad(BufferDC, L"Res//back_deco.bmp");
+	Imglist.at(BACK_NOMAL0)->ImgLoad(BufferDC, L"Res//back_normal.bmp");
+	Imglist.at(BACK_NOMAL1)->ImgLoad(BufferDC, L"Res//back_normal2.bmp");
+	Imglist.at(BACK_PODIUM)->ImgLoad(BufferDC, L"Res//end.bmp");
+	Imglist.at(BACK_MITER)->ImgLoad(BufferDC, L"Res//miter.bmp");
 }
 
 void BitMapManager::IconImgLoad()
 {
-	m_pIcon[ICON_LIFE].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//icon.bmp");
-	m_pIcon[ICON_STAR_B].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//star.bmp");
-	m_pIcon[ICON_STAR_Y].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//star2.bmp");
-	m_pIcon[ICON_STAR_R].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//star1.bmp");
-	m_pIcon[ICON_TITLE].ImgLoad(m_BackBuffer.GetMemDC(), L"Res//title.bmp");
+	Imglist.at(ICON_LIFE)->ImgLoad(BufferDC, L"Res//icon.bmp");
+	Imglist.at(ICON_STAR_B)->ImgLoad(BufferDC, L"Res//star.bmp");
+	Imglist.at(ICON_STAR_Y)->ImgLoad(BufferDC, L"Res//star2.bmp");
+	Imglist.at(ICON_STAR_R)->ImgLoad(BufferDC, L"Res//star1.bmp");
+	Imglist.at(ICON_TITLE)->ImgLoad(BufferDC, L"Res//title.bmp");
 }
 
-void BitMapManager::BitRelease()
+void BitMapManager::Clear()
 {
-	m_BackBuffer.Release();
-}
+	for (vector<BitMap*>::iterator it = Imglist.begin(); it != Imglist.end(); it++)
+	{
+		delete (*it);
 
+	}
+	Imglist.clear();
+}
 
 BitMapManager::~BitMapManager()
 {

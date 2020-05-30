@@ -1,17 +1,49 @@
-﻿  GameManager.cpp
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(112): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(184): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(186): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(189): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(192): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(224): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(225): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(229): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(230): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(234): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(235): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(236): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(240): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(241): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\lee\desktop\circus-charlie-master\circus-charlie-master\circuscharlie\circuscharlie\gamemanager.cpp(242): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CircusCharlie.vcxproj -> C:\Users\LEE\Desktop\Circus-Charlie-master\Circus-Charlie-master\CircusCharlie\Debug\CircusCharlie.exe
+﻿  Background.cpp
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(18): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(19): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(26): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(27): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(37): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(62): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(93): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(94): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(99): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(100): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(111): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(112): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(117): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(118): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(149): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(150): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(188): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(188): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(190): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(190): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(198): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(198): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(203): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(205): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(209): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\background.cpp(214): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  BitMap.cpp
+c:\users\lee\source\repos\circuscharlie\circuscharlie\bitmap.cpp(34): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\bitmap.cpp(40): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  BitMapManager.cpp
+c:\users\lee\source\repos\circuscharlie\circuscharlie\bitmapmanager.cpp(3): warning C4356: 'Singleton<BitMapManager>::_Singleton': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+  CircusMain.cpp
+  Font.cpp
+  GameManager.cpp
+c:\users\lee\source\repos\circuscharlie\circuscharlie\gamemanager.cpp(99): warning C4101: 'str' :참조되지 않은 지역 변수입니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\gamemanager.cpp(165): warning C4838: 'double'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\gamemanager.cpp(165): warning C4244: '초기화 중': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\gamemanager.cpp(168): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\gamemanager.cpp(171): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\gamemanager.cpp(181): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\gamemanager.cpp(194): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\gamemanager.cpp(209): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Player.cpp
+c:\users\lee\source\repos\circuscharlie\circuscharlie\player.cpp(189): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\player.cpp(190): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lee\source\repos\circuscharlie\circuscharlie\player.cpp(201): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+  CircusCharlie.vcxproj -> C:\Users\LEE\source\repos\CircusCharlie\Debug\CircusCharlie.exe

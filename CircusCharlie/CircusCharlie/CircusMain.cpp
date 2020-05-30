@@ -11,7 +11,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 	MSG Message;
 	WNDCLASS WndClass;
 	g_hInst = hInstance;
-	RECT rt = { 0, 0, 512 ,448 }; 
+	RECT rt = { 0, 0, 512 ,448 };
 	srand((unsigned int)time(NULL));
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, false);
 	WndClass.cbClsExtra = 0;
@@ -28,7 +28,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rt.right - rt.left, rt.bottom - rt.top, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
-//Init
+	//Init
 	g_GameManager.Init(hWnd);
 	while (true)
 	{

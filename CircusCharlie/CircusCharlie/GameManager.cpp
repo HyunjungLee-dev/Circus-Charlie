@@ -6,345 +6,138 @@ GameManager::GameManager()
 {
 }
 
+// Init
+
 void GameManager::Init(HWND hWnd)
 {
-
 	m_dwLastTime = GetTickCount();
 	m_dwCurTime = GetTickCount();
 
 	m_hWnd = hWnd;
-
-	m_state = { 0,0,514,100 };
-	Passcheck = PASS_NOT;
-	Ringtype = false;
-
+	GetClientRect(m_hWnd, &m_ClientRct);
 	BitMapManager::GetSingleton()->Init(hWnd);
+	m_backbufferDC = BitMapManager::GetSingleton()->GetBufferDC();
+	m_Font.Init();
 
-	TitleStar();
-	StateReset();
-
-
+	m_eGameState = GAME_MAIN;
+	m_eStartCheck = GAME_NONE;
+	m_fStartTime = 0.0f;
+	m_fTextTime = 0.0f;
 }
+
 
 void GameManager::StateReset()
 {
-	m_eGameState = GAME_MAIN;
-	m_iBonus = 5000;
-	m_iStage = 1;
-	m_iScore = 0;
-	m_iHI = 20000;
+	m_stat.Bonus = 5000;
+	m_stat.Score = 0;
+	m_stat.Stage = 1;
+	m_stat.Hi = 20000;
 
-	Passcheck = PASS_NOT;
-	Ringtype = false;
 
-	m_player.Init();
 	m_Backgrd.Init(0, 100);
-	m_enemy.Init();
+	m_Player.Init();
 }
 
+//Update
 void GameManager::Update()
 {
-	if (m_eGameState == GAME_STOP)
-	{
-		Collision();
-		TextRender();
-		return;
-	}
-	else if (m_eGameState == GAME_MAIN || m_eGameState == GAME_INIT)
-	{
-		Title();
-	}
-	else if (m_eGameState == GAME_START || m_eGameState == GAME_RE || m_eGameState == GAME_DIE)
-	{
+	if (m_eGameState == GAME_MAIN || m_eGameState == GAME_INIT)
+		MainUpdate();
+	else if (m_eGameState == GAME_START)
 		Stage();
-	}
-	else if (m_eGameState == GAME_END)
-	{
-		m_player.Update(ENDPOS);
-		m_Backgrd.EndMotion();
-		m_enemy.backRing();
-		EndScore();
-		TextRender();
-		Render();
-	}
 	else if (m_eGameState == GAME_PLAY)
 	{
-		TextUpdate();
+		StatUpdate();
 
 		if (GetKeyState(VK_LEFT) & 0x8000)
 		{
-			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(0)*0.35)
+			if (m_Player.GetPlayX() < m_Backgrd.GetMitterPos(0))
 			{
-				m_enemy.Update(NOTEND);
-			Collision();
-				EnemyPass();
-				Render();
 				return;
 			}
 		}
-	
-		if (m_player.GetPlayX() > m_Backgrd.GetMitterPos(9))
+		if (m_Player.GetPlayX() > m_Backgrd.GetMitterPos(9))
 		{
-			m_enemy.Update(ENDLINE);
-			End();
-			m_Backgrd.CheckDistacne(m_player.GetPlayX());
-			Collision();
-			EnemyPass();
+			m_Backgrd.Update();
+			EndLine();
 			Render();
 			return;
 		}
-		
-		m_enemy.Update(NOTEND);
-		m_player.Update(NOTEND);
-		m_Backgrd.CheckDistacne(m_player.GetPlayX());
 		m_Backgrd.Update();
-		Collision();
-		EnemyPass();
+		m_Player.Update(NOTEND);
 		Render();
 	}
+	else if (m_eGameState == GAME_END)
+	{
+		m_Backgrd.EndMotion();
+		m_Backgrd.Update();
+		m_Player.Update(ENDPOS);
+		StatWindow();
+		EndScore();
+	}
+	Render();
 }
 
-void GameManager::Stage()		
+void GameManager::MainUpdate()
 {
-	RECT temp;
-	GetClientRect(m_hWnd, &temp);
-
-	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-	PatBlt(hdc, 0, 0, temp.right, temp.bottom, BLACKNESS);
-	m_dwCurTime = GetTickCount();
-	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
-
-
-	TCHAR str[128];
-	if (m_eGameState == GAME_DIE)
+	if (m_eGameState == GAME_INIT)
 	{
-		wsprintf(str, TEXT("GAME OVER"));
-		Font(temp.right*0.4, temp.bottom*0.5, str, 0x00ffffff);
+		Release();
+		PatBlt(m_backbufferDC, 0, 0, m_ClientRct.right, m_ClientRct.bottom, BLACKNESS); // 지우기
 	}
-	else
-	{
-		wsprintf(str, TEXT("STAGE-%02d"), m_iStage);
-		Font(temp.right*0.4, temp.bottom*0.5, str, 0x00ffffff);
-	}
-	TextRender();
-	if (m_fDeltaTime > 3.0f)
-	{
-		if (m_eGameState == GAME_DIE)
-		{
-			m_eGameState = GAME_INIT;
-			return;
-		}
-		if (m_eGameState == GAME_RE)  
-		{
-
-			if (m_player.GetPlayX() < m_Backgrd.GetMitterPos(0)*0.35)
-			{
-				m_enemy.backRing();
-			}
-			else
-			{
-				m_Backgrd.backBgd(m_player.GetPlayX());
-				m_enemy.backRing();
-				m_enemy.backEnemy(m_Backgrd.GetBacklength());
-			}
-		}
-		m_eGameState = GAME_PLAY;
-		m_player.SetLife();
-		Passcheck = PASS_NOT;
-		m_dwLastTime = m_dwCurTime;
-	}
-}
-
-void GameManager::Title()
-{
-	TCHAR str[128];
-	RECT temp;
-	GetClientRect(m_hWnd, &temp);
-
-	HDC hdc2 = GetDC(m_hWnd);
-	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-
-	
-
 	if (GetKeyState(VK_RETURN) & 0x8000)
 	{
-		if (m_eGameState == GAME_INIT)
-		{
-			Release();
-			StateReset();
-		}
-		m_eGameState = GAME_START;
+		m_eStartCheck = GAME_WAIT;
 	}
+	Main();
 
-	
+}
+
+void GameManager::StatUpdate()
+{
+
+	TCHAR str[128];
+
 	m_dwCurTime = GetTickCount();
 	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
 
-
-	if (m_fDeltaTime > 0.1f)
+	if (m_fDeltaTime > 0.3f)
 	{
-		for (int i = 0; i < 46; i++)
-		{
-			switch (star[i]->starColor)
-			{
-			case ICON_STAR_B:
-				star[i]->starColor = ICON_STAR_Y;
-				break;
-			case ICON_STAR_Y:
-				star[i]->starColor = ICON_STAR_R;
-				break;
-			case ICON_STAR_R:
-				star[i]->starColor = ICON_STAR_B;
-				break;
-			}
-		}
+		m_stat.Bonus -= 10;
+		if (m_stat.Bonus < 0)
+			m_stat.Bonus = 0;
+		m_fTextTime += m_fDeltaTime;
 		m_dwLastTime = m_dwCurTime;
 	}
-
-
-	BitMapManager::GetSingleton()->GetIcon(ICON_TITLE).Draw(hdc, temp.right*0.27, temp.bottom*0.23, 1);
-	wsprintf(str, TEXT("PLAY SELECT"), m_iStage);
-	Font(temp.right*0.4, temp.bottom*0.6, str, 0x00ffffff);
-
-	wsprintf(str, TEXT("☞ 1 PLAYER A"), m_iStage);
-	Font(temp.right*0.35, temp.bottom*0.7, str, 0x00ffffff);
-	for (int i = 0; i < 46; i++)
-	{
-		BitMapManager::GetSingleton()->GetIcon(star[i]->starColor).Draw(hdc, star[i]->pos.m_fX, star[i]->pos.m_fY, 1, 1);
-	}
-	BitMapManager::GetSingleton()->GetBackBuffer().Draw(hdc2);
-	PatBlt(hdc, 0, 0, temp.right, temp.bottom, BLACKNESS);
-	ReleaseDC(m_hWnd, hdc2);
+	StatWindow();
 }
 
-void GameManager::TitleStar()
+void GameManager::EndLine()
 {
-	ICON_IMG tmp = ICON_STAR_B;
-	RECT temp;
-	GetClientRect(m_hWnd, &temp);
-
-
-	for (int i = 0; i < 46; i++)
+	if (m_Backgrd.PodiumCheck(m_Player.GetPlayerRct()))
 	{
-		star.push_back(new Star);
-		switch (tmp)
-		{
-		case ICON_STAR_B:
-			tmp = ICON_STAR_Y;
-			break;
-		case ICON_STAR_Y:
-			tmp = ICON_STAR_R;
-			break;
-		case ICON_STAR_R:
-			tmp = ICON_STAR_B;
-			break;
-		}
-		star[i]->starColor = tmp;
-		if (i < 16)
-		{
-			star[i]->pos.m_fX = temp.right*0.25 + i * BitMapManager::GetSingleton()->GetIcon(tmp).GetSize().cx * 1.2;
-			star[i]->pos.m_fY = temp.bottom*0.18;
-		}
-		else if (i < 32)
-		{
-			star[i]->pos.m_fX = temp.right*0.25 + (i - 16)* BitMapManager::GetSingleton()->GetIcon(tmp).GetSize().cx * 1.2;
-			star[i]->pos.m_fY = temp.bottom*0.23 + BitMapManager::GetSingleton()->GetIcon(ICON_TITLE).GetSize().cy;
-		}
-		else if (i < 39)
-		{
-			float y = (i - 32) * BitMapManager::GetSingleton()->GetIcon(tmp).GetSize().cy * 1.2;
-			star[i]->pos.m_fX = temp.right*0.21;
-			star[i]->pos.m_fY = temp.bottom*0.21 + y;
-		}
-		else
-		{
-			float y = (i - 39) * BitMapManager::GetSingleton()->GetIcon(tmp).GetSize().cy * 1.2;
-			star[i]->pos.m_fX = temp.right*0.29 + BitMapManager::GetSingleton()->GetIcon(ICON_TITLE).GetSize().cx;
-			star[i]->pos.m_fY = temp.bottom*0.21 + y;
-		}
+		m_eGameState = GAME_END;
+		m_Player.Update(ENDPOS);
 	}
-}
-
-void GameManager::EnemyPass() 
-{
-	PASS Rpatype, Jpatype;
-
-	if (m_player.GetState() == IDLE && Passcheck != PASS_NOT)
-	{
-		switch (Passcheck)
-		{
-		case PASS_JAR:
-			m_iScore += (int)PASS_JAR;
-			break;
-		case PASS_RING:
-			m_iScore += (int)PASS_RING;
-			break;
-		case PASS_DOUBLE:
-			if (Ringtype)
-			{
-				m_iScore += (int)(PASS_RING + PASS_JAR + PASS_ITEMRING + PASS_BONOUS);
-				Ringtype = false;
-			}
-			else
-				m_iScore += (int)(PASS_RING + PASS_JAR + PASS_BONOUS);
-			break;
-		case PASS_ITEMRING:
-			m_iScore += (int)(PASS_RING + PASS_ITEMRING);
-			break;
-
-		}
-		Passcheck = PASS_NOT;
-		m_enemy.ResetItem();
-	}
-
-	if (m_player.GetState() == JUMP)
-	{
-		Rpatype = m_enemy.RingPassCheck(m_player.GetPlayX());
-		Jpatype = m_enemy.PassCheck(m_player.GetPlayX());
-
-		if (Passcheck != PASS_DOUBLE)
-		{
-		
-			if(Jpatype != PASS_NOT)
-				Passcheck = PASS_JAR;
-			if (Rpatype == PASS_ITEMRING)
-			{
-				Passcheck = PASS_ITEMRING;
-			}
-			else if (Rpatype == PASS_RING)
-			{
-				Passcheck = PASS_RING;
-			}
-		}
-		if (Rpatype != PASS_NOT && Jpatype != PASS_NOT)
-		{
-			if (Rpatype == PASS_ITEMRING)
-			{
-				Ringtype = true;
-			}
-			Passcheck = PASS_DOUBLE;
-		}
-	}
+	else
+		m_Player.Update(ENDLINE);
 }
 
 void GameManager::EndScore()
 {
-	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-	PatBlt(hdc, 0, 0, m_state.right, m_state.bottom, BLACKNESS);
-
 	m_dwCurTime = GetTickCount();
 	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
 
-	int tmp = m_iBonus;
+	int tmp = m_stat.Bonus;
 	if (tmp != 0)
 	{
 		tmp -= 10;
-		m_iScore += 10;
+		m_stat.Score += 10;
 	}
-	if (m_iBonus != 0)
-		m_iBonus -= 10;
+	if (m_stat.Bonus != 0)
+		m_stat.Bonus -= 10;
 
-	if (m_iBonus == 0)
+	if (m_stat.Bonus == 0)
 	{
 		if (m_fDeltaTime > 15.0f)
 		{
@@ -354,173 +147,170 @@ void GameManager::EndScore()
 	}
 }
 
-void GameManager::End()
+
+//Render
+void GameManager::Render()
 {
-	if (m_Backgrd.EndCheck(m_player.GetPlayerRct()))
-	{
-		m_eGameState = GAME_END;
-		m_player.Update(ENDPOS);
-	}
-	else
-		m_player.Update(ENDLINE);
+	HDC hdc = GetDC(m_hWnd);
+	BitMapManager::GetSingleton()->GetBackBuffer().Draw(hdc);
+	ReleaseDC(m_hWnd, hdc);
 }
 
-void GameManager::Collision()
+void  GameManager::Main()
+{
+
+	m_dwCurTime = GetTickCount();
+	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
+
+	RECT SelectRct = { m_ClientRct.right * 0.3, m_ClientRct.bottom * 0.68, m_ClientRct.right * 0.7, m_ClientRct.bottom * 0.75 };
+
+	BitMapManager::GetSingleton()->GetImg(ICON_TITLE)->
+		Draw(m_backbufferDC, m_ClientRct.right*0.27, m_ClientRct.bottom*0.23, 1);
+
+
+	m_Font.Text(m_ClientRct.right*0.4, m_ClientRct.bottom*0.6, L"PLAY SELECT", 0x00ffffff);
+
+	if (m_eStartCheck == GAME_WAIT)
+	{
+		if (m_fDeltaTime > 0.2f)
+		{
+			PatBlt(m_backbufferDC, SelectRct.left, SelectRct.top, SelectRct.right, SelectRct.bottom, BLACKNESS);
+		}
+		if (m_fDeltaTime > 0.4f)
+		{
+			m_Font.Text(m_ClientRct.right*0.35, m_ClientRct.bottom*0.7, L"☞ 1 PLAYER A", 0x00ffffff);
+			m_dwLastTime = m_dwCurTime;
+			m_fStartTime += m_fDeltaTime;
+		}
+		if (m_fStartTime > 2.0f)
+		{
+			m_eStartCheck = GAME_NONE;
+			m_fStartTime = 0.0f;
+			StateReset();
+			m_eGameState = GAME_START;
+		}
+	}
+	else
+		m_Font.Text(m_ClientRct.right*0.35, m_ClientRct.bottom*0.7, L"☞ 1 PLAYER A", 0x00ffffff);
+
+}
+
+void GameManager::Stage()
 {
 	m_dwCurTime = GetTickCount();
 	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
 
-	if (m_enemy.Collision(m_player.GetPlayerRct()))
-	{
-		m_player.SetPlayerMotion(PLAYER_DIE);
-		m_eGameState = GAME_STOP;
-		if (m_fDeltaTime > 2.0f)
-		{
-			if(m_player.GetLife() <= 0)
-				m_eGameState = GAME_DIE;
-			else
-				m_eGameState = GAME_RE;
-			InvalidateRect(m_hWnd, NULL, TRUE);
-			m_dwLastTime = m_dwCurTime;
-		}
-	}
+	PatBlt(m_backbufferDC, 0, 0, m_ClientRct.right, m_ClientRct.bottom, BLACKNESS); // 지우기
 
+	StatWindow();
 
-}
-
-void GameManager::Font(int x, int y, TCHAR *str, COLORREF color)
-{
-	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-	HFONT hFont, OldFont;
-	hFont = CreateFont(0, 0, 0, 0, 0, 0, 0, 0, OEM_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("Terminal"));
-	OldFont = (HFONT)SelectObject(hdc, hFont);
-	SetBkColor(hdc, 0x00000000);
-	SetTextColor(hdc, color);
-
-	TextOut(hdc, x, y, str, lstrlen(str));
-
-
-	SelectObject(hdc, OldFont);
-	DeleteObject(hFont);
-	ReleaseDC(m_hWnd, hdc);
-	ReleaseDC(m_hWnd, hdc);
-}
-
-void GameManager::TextRender() 
-{
 	TCHAR str[128];
-	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-	HDC hdc2 = GetDC(m_hWnd);
+	wsprintf(str, TEXT("STAGE-%02d"), m_stat.Stage);
+	m_Font.Text(m_ClientRct.right*0.4, m_ClientRct.bottom*0.5, str, 0x00ffffff);
 
-	RECT rc1 = {60,30,460,80};
-	RECT rc2 = {55,25,465,85 };
+	if (m_fDeltaTime > 3.0f)
+	{
+		PatBlt(m_backbufferDC, 0, 0, m_ClientRct.right, m_ClientRct.bottom, BLACKNESS); //지우기
+		m_eGameState = GAME_PLAY;
+		m_dwLastTime = m_dwCurTime;
+	}
+}
+
+void GameManager::StatBox()
+{
+	RECT rc1 = { 60,30,460,80 };
+	RECT rc2 = { 55,25,465,85 };
 
 	HPEN hpen, hpenOld;
 	HBRUSH myBrush, oldBrush;
 
 
 	myBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
-	oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
+	oldBrush = (HBRUSH)SelectObject(m_backbufferDC, myBrush);
 
 	hpen = CreatePen(PS_SOLID, 2, RGB(255, 0, 127));
-	hpenOld = (HPEN)::SelectObject(hdc, (HGDIOBJ)hpen);
+	hpenOld = (HPEN)::SelectObject(m_backbufferDC, (HGDIOBJ)hpen);
 
-	Rectangle(hdc, rc1.left, rc1.top, rc1.right, rc1.bottom);
+	Rectangle(m_backbufferDC, rc1.left, rc1.top, rc1.right, rc1.bottom);
 
-	hpen = CreatePen(PS_SOLID, 2, RGB(0, 216, 255));
-	hpenOld = (HPEN)::SelectObject(hdc, (HGDIOBJ)hpen);
-
-	Rectangle(hdc, rc2.left, rc2.top, rc2.right, rc2.bottom);
-
-	hpen = (HPEN)::SelectObject(hdc, hpenOld);
+	hpen = (HPEN)::SelectObject(m_backbufferDC, hpenOld);
 	DeleteObject(hpen);
 
-	SelectObject(hdc, oldBrush);
+
+	myBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
+	oldBrush = (HBRUSH)SelectObject(m_backbufferDC, myBrush);
+
+	hpen = CreatePen(PS_SOLID, 2, RGB(0, 216, 255));
+	hpenOld = (HPEN)::SelectObject(m_backbufferDC, (HGDIOBJ)hpen);
+
+	Rectangle(m_backbufferDC, rc2.left, rc2.top, rc2.right, rc2.bottom);
+
+	hpen = (HPEN)::SelectObject(m_backbufferDC, hpenOld);
+	DeleteObject(hpen);
+
+	SelectObject(m_backbufferDC, oldBrush);
 	DeleteObject(myBrush);
+}
+
+void GameManager::StatWindow()
+{
+	TCHAR str[128];
+	RECT m_TextRct = { 70,40,100,60 };
+	
+	StatBox();
 
 
 	if (m_eGameState != GAME_PLAY)
+		m_Font.Text(70, 40, L"1P-", 0x00ffffff);
+	else
 	{
-		wsprintf(str, TEXT("1P-"));
-		Font(70, 40, str, 0x00ffffff);
-	}
-	wsprintf(str, TEXT("-%d"), m_iBonus);
-	Font(270, 60, str, 0x00ffffff);
-
-	wsprintf(str, TEXT("STAGE-%02d"), m_iStage);
-	Font(350, 40, str, 0x00ffffff);
-
-	wsprintf(str, TEXT("HI-%06d"), m_iHI);
-	Font(210, 40, str, 0x00ffffff);
-
-	wsprintf(str, TEXT("%06d"), m_iScore);
-	Font(105, 40, str, 0x00ffffff);
-
-	wsprintf(str, TEXT("BONUS"));
-	Font(210, 60, str, RGB(255, 0, 127));
-
-
-	int x = 430;
-	int y = 60;
-
-	for (int i = 0; i < m_player.GetLife(); i++)
-	{
-		if (i == 0)
-			BitMapManager::GetSingleton()->GetIcon(ICON_LIFE).Draw(hdc, x, y, 1, 1);
-		else
+		if (m_fTextTime > 0.2f)
 		{
-			x -= BitMapManager::GetSingleton()->GetIcon(ICON_LIFE).GetSize().cx;
-			BitMapManager::GetSingleton()->GetIcon(ICON_LIFE).Draw(hdc, x, y, 1, 1);
+			m_Font.Text(70, 40, L"1P-", 0x00ffffff);
+		}
+		if (m_fTextTime > 0.4f)
+		{
+			PatBlt(m_backbufferDC, m_TextRct.left, m_TextRct.top, m_TextRct.right, m_TextRct.bottom, BLACKNESS);
+			m_fTextTime = 0.0f;
 		}
 	}
-	BitMapManager::GetSingleton()->GetBackBuffer().Draw(hdc2);
-	ReleaseDC(m_hWnd, hdc);
-}
 
-void GameManager::TextUpdate() 
-{
 
-	TCHAR str[128];
-	HDC hdc = BitMapManager::GetSingleton()->GetBackBuffer().GetMemDC();
-	m_dwCurTime = GetTickCount();
-	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
-	PatBlt(hdc, 0, 0, m_state.right, m_state.bottom, BLACKNESS);
+	wsprintf(str, TEXT("-%d"), m_stat.Bonus);
+	m_Font.Text(270, 60, str, 0x00ffffff);
 
-	if ( m_fDeltaTime > 0.3f) 
+	wsprintf(str, TEXT("STAGE-%02d"), m_stat.Stage);
+	m_Font.Text(350, 40, str, 0x00ffffff);
+
+	wsprintf(str, TEXT("HI-%06d"), m_stat.Hi);
+	m_Font.Text(210, 40, str, 0x00ffffff);
+
+	wsprintf(str, TEXT("%06d"), m_stat.Score);
+	m_Font.Text(105, 40, str, 0x00ffffff);
+
+	m_Font.Text(210, 60, L"BONUS", RGB(255, 0, 127));
+
+	int iconX = 430;
+
+	for (int i = 0; i < m_Player.GetLife(); i++)
 	{
-		wsprintf(str, TEXT("1P-"));
-		Font(70, 40, str, 0x00ffffff);
-
-		m_iBonus -= 10;
-		if (m_iBonus < 0)
-			m_iBonus = 0;
-		m_dwLastTime = m_dwCurTime;
+		if (i == 0)
+			BitMapManager::GetSingleton()->GetImg(ICON_LIFE)->Draw(m_backbufferDC, iconX,60, 1, 1);
+		else
+		{
+			iconX -= BitMapManager::GetSingleton()->GetImg(ICON_LIFE)->GetSize().cx;
+			BitMapManager::GetSingleton()->GetImg(ICON_LIFE)->Draw(m_backbufferDC, iconX, 60, 1, 1);
+		}
 	}
-	wsprintf(str, TEXT("-%d"), m_iBonus);
-	Font(270, 60, str, 0x00ffffff);
-	TextRender();
 }
 
 
-void GameManager::Render()
-{
-	HDC hdc = GetDC(m_hWnd);
-	m_Backgrd.Render();
-	m_enemy.Render();
-	m_player.Render();
-	m_enemy.HalfRender();	
-	BitMapManager::GetSingleton()->GetBackBuffer().Draw(hdc);
-	ReleaseDC(m_hWnd, hdc);
-}
-
+//Release
 void GameManager::Release()
 {
 	m_Backgrd.Release();
-	m_enemy.Release();
 }
 
 GameManager::~GameManager()
 {
-	Release();
-	BitMapManager::Release();
 }
