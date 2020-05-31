@@ -10,7 +10,7 @@ Player::Player()
 void Player::Init()
 {
 	m_Pos.m_fX = 100.0f;
-	m_Pos.m_fY = 335.0f;
+	m_Pos.m_fY = 345.0f;
 
 	m_iLife = 4;
 	m_ePlayImg = PLAYER_MOVE0;
@@ -93,9 +93,9 @@ void Player::Jump()
 
 		{
 			if (m_eDirection == DIRECTION_LEFT)
-				m_Pos.m_fX -= 100 * m_fDeltaTime;
+				m_Pos.m_fX -= 20 * m_fDeltaTime;
 			else if (m_eDirection == DIRECTION_RIGHT)
-				m_Pos.m_fX += 100 * m_fDeltaTime;
+				m_Pos.m_fX += 20 * m_fDeltaTime;
 		}
 
 		if (m_eEnd != ENDPOS)
@@ -113,15 +113,15 @@ void Player::Jump()
 			m_fCurJumpTime = 0.0f;
 			if (m_eEnd == ENDPOS)
 			{
-				m_Pos.m_fX = 380.0f;
-				m_Pos.m_fY = 290.0f;
+				m_Pos.m_fX = 340.0f;
+				m_Pos.m_fY = 300.0f;
 				m_eState = P_END;
 				m_ePlayImg = PLAYER_WIN0;
 				//Motion();
 				return;
 			}
 			else
-				m_Pos.m_fY = 330.0f;
+				m_Pos.m_fY = 345.0f;
 		}
 
 		UpdateRct();
@@ -133,7 +133,10 @@ void Player::Motion()
 	m_fMotionTime += m_fDeltaTime;
 	if (m_eState == IDLE)
 	{
-		m_ePlayImg = PLAYER_MOVE0;
+		if(m_ePlayImg == PLAYER_DIE)
+			m_ePlayImg = PLAYER_DIE;
+		else
+			m_ePlayImg = PLAYER_MOVE0;
 	}
 	else if (m_eState == P_END)
 	{
@@ -179,7 +182,10 @@ void Player::Motion()
 	}
 	else if (m_eState == JUMP)
 	{
-		m_ePlayImg = PLAYER_MOVE2;
+		if (m_ePlayImg == PLAYER_DIE)
+			m_ePlayImg = PLAYER_DIE;
+		else
+			m_ePlayImg = PLAYER_MOVE2;
 	}
 
 }

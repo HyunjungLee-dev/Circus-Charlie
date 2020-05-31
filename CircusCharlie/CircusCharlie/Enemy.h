@@ -1,14 +1,6 @@
 #pragma once
 #include"BitMapManager.h"
 
-struct  Fire
-{
-	POS pos;
-	FIRE_IMG type;
-	ITEM Item;
-	RECT FireRect;
-};
-
 class Enemy
 {
 private:
@@ -16,30 +8,43 @@ private:
 	DWORD		m_dwCurTime;
 	float		m_fDeltaTime;
 
-	list<Fire*> Ring;
-	list<Fire*> Jar;
-	Fire* ResetRing;
+	list<Fire*> m_Ringlist;
+	vector<Fire*> m_Jar;
+
+	HDC m_backbufferDC;
+	bool m_bPassCheck;
 public:
 	Enemy();
 	~Enemy();
 
+	//Init
 	void Init();
 	void SetJar();
 	void SetRing();
 
-	void Update(END end);
+	//Update
+	void Update();
 	void UpdateRectPos();
+	void Move();
 	void Motion(Fire* f);
-	void backRing();
+
 	bool Collision(RECT rect);
-	void backEnemy(float back);
-	void ResetItem();
-	PASS PassCheck(float x);
+	void RestoreEnemy(float back);
+
+	PASS JarPassCheck(float x);
 	PASS RingPassCheck(float x);
 
+	//Render
 	void Render();
 	void HalfRender();
 
+	//Release
 	void Release();
+	void RingClear();
+	void JarClear();
+
+
+	//Getter
+
 };
 

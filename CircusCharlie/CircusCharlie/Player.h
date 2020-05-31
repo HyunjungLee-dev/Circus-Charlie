@@ -45,5 +45,10 @@ public:
 	int GetLife(){ return m_iLife; }
 	float GetPlayX() { return m_Pos.m_fX; }
 	RECT GetPlayerRct() { return m_playerRect; }
+	PLAYERSTATE GetState() { return m_eState; }
+
+	//Setter
+	void SetLife() { m_iLife--; }
+	void SetPlayerMotion(IMG m) { m_ePlayImg = m; }
 };
 

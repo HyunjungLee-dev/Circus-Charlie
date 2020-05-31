@@ -18,6 +18,7 @@ struct POS
 	float m_fY;
 };
 
+
 //BitmapManager
 
 enum IMG
@@ -92,6 +93,13 @@ enum END
 	NOTEND,
 };
 
+struct Star
+{
+	IMG starColor;
+	POS pos;
+};
+
+
 
 //Player
 
@@ -164,3 +172,4 @@ enum PASS
 	PASS_BONOUS = 100,
 	PASS_ITEMRING = 1000,
 };
+

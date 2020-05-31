@@ -2,6 +2,7 @@
 #include"Font.h"
 #include"Background.h"
 #include"Player.h"
+#include"Enemy.h"
 class GameManager
 {
 private:
@@ -20,12 +21,14 @@ private:
 
 	GAMESTATE m_eGameState;
 	GAMESTATE m_eStartCheck;
+	PASS m_ePasscheck;
+	bool m_bPassRingtype;
 
 	Stat m_stat;
 
 	Background m_Backgrd;
 	Player m_Player;
-
+	Enemy m_Enemy;
 
 public:
 	GameManager();
@@ -37,10 +40,18 @@ public:
 
 	//Update
 	void Update();
+	void Object();
 	void MainUpdate();
 	void StatUpdate();
+
 	void EndLine();
 	void EndScore();
+
+	void Collision();
+	void EnemyPass();
+
+	void MainStar();
+	void StarColor(IMG* s);
 
 	//Render
 	void Render();

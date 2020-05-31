@@ -37,14 +37,14 @@ void Background::Init(int x, int y)
 			m_Mitter.at(i)->pos.m_fX = 20 + DISTANCE * i;
 		else
 			m_Mitter.at(i)->pos.m_fX = 20;
-		m_Mitter.at(i)->pos.m_fY = 405;
+		m_Mitter.at(i)->pos.m_fY = 410;
 		m_Mitter.at(i)->Distance = Distance;
 		m_Mitter.at(i)->m_eImg = BACK_MITER;
 		Distance -= 10;
 	}
 
 	m_Podium.pos.m_fX = m_Mitter.back()->pos.m_fX;
-	m_Podium.pos.m_fY = 350;
+	m_Podium.pos.m_fY = 360;
 	m_Podium.m_eImg = BACK_PODIUM;
 
 }
@@ -175,6 +175,33 @@ void Background::EndMotion()
 	}
 }
 
+void Background::RestoreBckgrd(float Playerpos)
+{
+	backlength = Playerpos - m_Mitter[NowDistance]->pos.m_fX - 80;
+
+	for (list<BACKGROUND*>::iterator iter = m_Audiencelist.begin(); iter != m_Audiencelist.end(); iter++)
+	{
+		(*iter)->pos.m_fX += backlength;
+	}
+
+	for (vector<MITTER*>::iterator iter = m_Mitter.begin(); iter != m_Mitter.end(); iter++)
+	{
+		(*iter)->pos.m_fX += backlength;
+
+	}
+
+	m_Podium.pos.m_fX += backlength;
+}
+
+void Background::CheckDistacne(float Playerpos)
+{
+	for (int i = 0; i < m_Mitter.size(); i++)
+	{
+		if (Playerpos > m_Mitter.at(i)->pos.m_fX + BitMapManager::GetSingleton()->GetImg(BACK_MITER)->GetSize().cx)
+			NowDistance = i;
+	}
+}
+
 //Render
 void Background::Render()
 {
@@ -195,7 +222,7 @@ void Background::Render()
 
 	for (list<BACKGROUND*>::iterator iter = m_Fieldlist.begin(); iter != m_Fieldlist.end(); iter++)
 	{
-		BitMapManager::GetSingleton()->GetImg((*iter)->m_eImg)->Draw(m_backbufferDC, (*iter)->pos.m_fX, (*iter)->pos.m_fY, 1.2);
+		BitMapManager::GetSingleton()->GetImg((*iter)->m_eImg)->Draw(m_backbufferDC, (*iter)->pos.m_fX, (*iter)->pos.m_fY, 1.25);
 	}
 
 	for (vector<MITTER*>::iterator iter = m_Mitter.begin(); iter != m_Mitter.end(); iter++)
@@ -224,23 +251,23 @@ float Background::GetMitterPos(int index)
 void Background::Release()
 {
 
-	for (std::vector<MITTER*>::iterator it = m_Mitter.begin(); it != m_Mitter.end(); it++)
+	for (vector<MITTER*>::iterator it = m_Mitter.begin(); it != m_Mitter.end(); it++)
 
 	{
 		delete (*it);
 	}
 	m_Mitter.clear();
 
-	for (std::list<BACKGROUND*>::iterator it = m_Audiencelist.begin(); it != m_Audiencelist.end(); it++)
+	for (list<BACKGROUND*>::iterator it = m_Audiencelist.begin(); it != m_Audiencelist.end(); it++)
 
 	{
 		delete (*it);
 	}
 	m_Audiencelist.clear();
 
-	//clear³Ä delete³Ä
 
-	for (std::list<BACKGROUND*>::iterator it = m_Fieldlist.begin(); it != m_Fieldlist.end(); it++)
+
+	for (list<BACKGROUND*>::iterator it = m_Fieldlist.begin(); it != m_Fieldlist.end(); it++)
 
 	{
 		delete (*it);
@@ -249,16 +276,7 @@ void Background::Release()
 
 }
 
-void Background::Clear(vector<MITTER*> vec)
-{
 
-	
-}
-
-void Background::Clear(list<BACKGROUND*> list)
-{
-	
-}
 
 Background::~Background()
 {
