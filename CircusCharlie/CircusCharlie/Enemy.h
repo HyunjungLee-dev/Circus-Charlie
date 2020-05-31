@@ -13,6 +13,7 @@ private:
 
 	HDC m_backbufferDC;
 	bool m_bPassCheck;
+	LINE m_eLine;
 public:
 	Enemy();
 	~Enemy();
@@ -23,7 +24,7 @@ public:
 	void SetRing();
 
 	//Update
-	void Update();
+	void Update(LINE line);
 	void UpdateRectPos();
 	void Move();
 	void Motion(Fire* f);

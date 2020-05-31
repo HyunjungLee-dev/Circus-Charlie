@@ -77,6 +77,7 @@ void BitMapManager::Clear()
 {
 	for (vector<BitMap*>::iterator it = Imglist.begin(); it != Imglist.end(); it++)
 	{
+		(*it)->Release();
 		delete (*it);
 
 	}

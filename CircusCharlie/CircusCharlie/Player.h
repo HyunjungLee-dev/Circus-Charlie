@@ -19,7 +19,7 @@ private:
 
 	PLAYERSTATE m_eState;
 	DIRECTION m_eDirection;
-	END m_eEnd;
+	LINE m_eEnd;
 	int m_iLife;
 public:
 	Player();
@@ -29,7 +29,7 @@ public:
 	void Init();
 
 	//Update
-	void Update(END state);
+	void Update(LINE state);
 	void Move();
 	void Jump();
 	void Motion();

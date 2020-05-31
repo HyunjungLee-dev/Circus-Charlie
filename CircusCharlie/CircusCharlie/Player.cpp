@@ -21,11 +21,12 @@ void Player::Init()
 
 	m_dwLastTime = GetTickCount();
 	m_dwCurTime = GetTickCount();
+	m_fCurJumpTime = 0.0f;
 	m_fMotionTime = 0.0f;
 }
 
 //Update
-void Player::Update(END state)
+void Player::Update(LINE state)
 {
 	m_dwCurTime = GetTickCount();
 	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
@@ -113,11 +114,10 @@ void Player::Jump()
 			m_fCurJumpTime = 0.0f;
 			if (m_eEnd == ENDPOS)
 			{
-				m_Pos.m_fX = 340.0f;
+				m_Pos.m_fX = 330.0f;
 				m_Pos.m_fY = 300.0f;
 				m_eState = P_END;
 				m_ePlayImg = PLAYER_WIN0;
-				//Motion();
 				return;
 			}
 			else

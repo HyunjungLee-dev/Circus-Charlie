@@ -86,11 +86,12 @@ struct Stat
 	int Hi;
 };
 
-enum END
+enum LINE
 {
 	ENDLINE,
 	ENDPOS,
 	NOTEND,
+	STARTLINE
 };
 
 struct Star
@@ -153,6 +154,7 @@ enum ITEM
 {
 	NONE,
 	HAVE,
+	CHECK,
 };
 
 struct  Fire

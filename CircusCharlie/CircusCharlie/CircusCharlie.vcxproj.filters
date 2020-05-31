@@ -18,13 +18,16 @@
     <ClCompile Include="Background.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="BitMap.cpp">
+    <ClCompile Include="Bitmap.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="BitMapManager.cpp">
+    <ClCompile Include="BitmapManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CircusMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
@@ -34,9 +37,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,22 +50,22 @@
     <ClInclude Include="Mecro.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Font.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="BitMapManager.h">
+    <ClInclude Include="Enemy.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="BitMap.h">
+    <ClInclude Include="Bitmap.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Background.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
+    <ClInclude Include="BitmapManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

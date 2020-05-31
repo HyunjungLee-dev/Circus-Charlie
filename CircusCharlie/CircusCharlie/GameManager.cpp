@@ -23,6 +23,8 @@ void GameManager::Init(HWND hWnd)
 	m_eStartCheck = GAME_NONE;
 	m_fStartTime = 0.0f;
 	m_fTextTime = 0.0f;
+	SetMainStar();
+
 }
 
 
@@ -33,10 +35,69 @@ void GameManager::StateReset()
 	m_stat.Stage = 1;
 	m_stat.Hi = 20000;
 
+	m_ePasscheck = PASS_NOT;
 
 	m_Backgrd.Init(0, 100);
 	m_Player.Init();
 	m_Enemy.Init();
+
+}
+
+void GameManager::SetMainStar()
+{
+	IMG Color = ICON_STAR_B;
+	int iconsizeX = BitMapManager::GetSingleton()->GetImg(Color)->GetSize().cx;
+	int StartX = m_ClientRct.right*0.22;
+	int StartY = m_ClientRct.bottom*0.18;
+
+	for (int i = 1; i <= 16; i++)
+	{
+		StarColor(&Color);
+		m_Star.push_back(new Star);
+		m_Star.back()->pos.m_fX = StartX + i * iconsizeX*1.2;
+		m_Star.back()->pos.m_fY = StartY;
+		m_Star.back()->starColor = Color;
+	}
+
+	for (int i = 1; i <= 16; i++)
+	{
+		StarColor(&Color);
+		m_Star.push_back(new Star);
+		m_Star.back()->pos.m_fX = StartX + i * iconsizeX*1.2;
+		m_Star.back()->pos.m_fY = StartY  + BitMapManager::GetSingleton()->GetImg(ICON_TITLE)->GetSize().cy * 1.2;
+		m_Star.back()->starColor = Color;
+	}
+
+	StartY = m_ClientRct.bottom*0.18;
+
+	for (int i = 0; i < 6; i++)
+	{
+		int y = BitMapManager::GetSingleton()->GetImg(Color)->GetSize().cy * 1.45;
+		StartX = m_ClientRct.right*0.21;
+		StartY += y;
+
+		StarColor(&Color);
+		m_Star.push_back(new Star);
+		m_Star.back()->pos.m_fX = StartX;
+		m_Star.back()->pos.m_fY = StartY;
+		m_Star.back()->starColor = Color;
+	}
+
+	StartY = m_ClientRct.bottom*0.18;
+
+	for (int i = 0; i < 6; i++)
+	{
+		StarColor(&Color);
+		int y = BitMapManager::GetSingleton()->GetImg(Color)->GetSize().cy * 1.45;
+		StartX = m_ClientRct.right*0.29 + BitMapManager::GetSingleton()->GetImg(ICON_TITLE)->GetSize().cx;
+		StartY += y;
+
+		StarColor(&Color);
+		m_Star.push_back(new Star);
+		m_Star.back()->pos.m_fX = StartX;
+		m_Star.back()->pos.m_fY = StartY;
+		m_Star.back()->starColor = Color;
+	}
 }
 
 //Update
@@ -54,27 +115,19 @@ void GameManager::Update()
 		{
 			if (m_Player.GetPlayX() < m_Backgrd.GetMitterPos(0))
 			{
-				m_Backgrd.Render();
-				Collision();
-				m_Enemy.Update();
-				EnemyPass();
-				Render();
+				m_eLine = STARTLINE;
+				ObjectUpdate();
 				return;
 			}
 		}
 		if (m_Player.GetPlayX() > m_Backgrd.GetMitterPos(9)*1.2)
 		{
-			m_Backgrd.Update();
-			m_Enemy.Update();
-			EndLine();
-			m_Backgrd.CheckDistacne(m_Player.GetPlayX());
-			EnemyPass();
-			Render();
+			m_eLine = ENDLINE;
+			ObjectUpdate();
 			return;
 		}
-		Collision();
-		EnemyPass();
-		Object();
+		m_eLine = NOTEND;
+		ObjectUpdate();
 	}
 	else if (m_eGameState == GAME_STOP)
 	{
@@ -93,13 +146,36 @@ void GameManager::Update()
 	Render();
 }
 
-void GameManager::Object()
+void GameManager::ObjectUpdate()
 {
-	m_Backgrd.Update();
-	m_Enemy.Update();
-	m_Player.Update(NOTEND);
-	m_Backgrd.CheckDistacne(m_Player.GetPlayX());
-	m_Enemy.HalfRender();
+	Collision(); 
+	EnemyPass();
+
+	if (m_eLine == NOTEND)
+	{
+		m_Backgrd.Update();
+		m_Enemy.Update(NOTEND);
+		m_Player.Update(NOTEND);
+		m_Backgrd.CheckDistacne(m_Player.GetPlayX());
+		m_Enemy.HalfRender();
+	}
+	else if (m_eLine == STARTLINE)
+	{
+		m_Backgrd.Render();
+		m_Player.Update(NOTEND);
+		m_Enemy.Update(STARTLINE);
+		m_Enemy.HalfRender();
+		Render();
+	}
+	else if (m_eLine == ENDLINE)
+	{
+		m_Backgrd.Update();
+		m_Enemy.Update(ENDLINE);
+		EndLine();
+		m_Backgrd.CheckDistacne(m_Player.GetPlayX());
+		m_Enemy.HalfRender();
+		Render();
+	}
 }
 
 void GameManager::Collision()
@@ -125,9 +201,12 @@ void GameManager::Collision()
 
 void GameManager::MainUpdate()
 {
+
+	StarUpdate();
+
 	if (m_eGameState == GAME_INIT)
 	{
-		Release();
+		ObejectClear();
 		PatBlt(m_backbufferDC, 0, 0, m_ClientRct.right, m_ClientRct.bottom, BLACKNESS); 
 		m_eGameState = GAME_MAIN;
 	}
@@ -172,10 +251,10 @@ void GameManager::EndLine()
 
 void GameManager::EndScore()
 {
-	int tmp = m_stat.Bonus;
-	if (tmp != 0)
+	int m_eStarColor = m_stat.Bonus;
+	if (m_eStarColor != 0)
 	{
-		tmp -= 10;
+		m_eStarColor -= 10;
 		m_stat.Score += 10;
 	}
 	if (m_stat.Bonus != 0)
@@ -186,7 +265,7 @@ void GameManager::EndScore()
 		m_dwCurTime = GetTickCount();
 		m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
 
-		if (m_fDeltaTime > 2.0f)
+		if (m_fDeltaTime > 10.0f)
 		{
 			m_eGameState = GAME_INIT;
 			m_dwLastTime = m_dwCurTime;
@@ -255,51 +334,36 @@ void GameManager::EnemyPass()
 	}
 }
 
-void GameManager::MainStar()
+void GameManager::StarUpdate()
 {
-	IMG tmp = ICON_STAR_B;
-	int iconsizeX = BitMapManager::GetSingleton()->GetImg(tmp)->GetSize().cx;
-	int StartX = m_ClientRct.right*0.25;
-	int StartY = m_ClientRct.bottom*0.18;
-
-	for (int i = 1; i <= 14; i++)
-	{
-		StarColor(&tmp);
-		BitMapManager::GetSingleton()->GetImg(tmp)->Draw(m_backbufferDC, StartX + i * iconsizeX*1.2, StartY ,1,1);
-	}
 	
-	for (int i = 1; i <= 14; i++)
+	m_dwCurTime = GetTickCount();
+	m_fDeltaTime = (m_dwCurTime - m_dwLastTime) / 1000.0f;
+
+	if (m_eStartCheck != GAME_WAIT)
 	{
-		StartY = m_ClientRct.bottom*0.23 + BitMapManager::GetSingleton()->GetImg(ICON_TITLE)->GetSize().cy;
-		StarColor(&tmp);
-		BitMapManager::GetSingleton()->GetImg(tmp)->Draw(m_backbufferDC, StartX + i * iconsizeX*1.2, StartY, 1, 1);
+		if (m_fDeltaTime > 0.3f)
+		{
+			PatBlt(m_backbufferDC, 0, 0, m_ClientRct.right, m_ClientRct.bottom, BLACKNESS);
+			for (int i = 0; i < m_Star.size(); i++)
+			{
+				StarColor(&m_Star[i]->starColor);
+			}
+			m_dwLastTime = m_dwCurTime;
+		}
 	}
+	StarRender();
 
-	StartY = m_ClientRct.bottom*0.18;
 
-	for (int i = 0; i < 6; i++)
+}
+
+
+void GameManager::StarRender()
+{
+	for (int i = 0; i < m_Star.size(); i++)
 	{
-		int y = BitMapManager::GetSingleton()->GetImg(tmp)->GetSize().cy * 1.45;
-		StartX = m_ClientRct.right*0.25;
-		StartY += y;
-		StarColor(&tmp);
-		BitMapManager::GetSingleton()->GetImg(tmp)->Draw(m_backbufferDC, StartX , StartY, 1, 1);
+		BitMapManager::GetSingleton()->GetImg(m_Star[i]->starColor)->Draw(m_backbufferDC, m_Star[i]->pos.m_fX, m_Star[i]->pos.m_fY, 1, 1);
 	}
-
-	StartY = m_ClientRct.bottom*0.18;
-
-	for (int i = 0; i < 6; i++)
-	{
-		int y = BitMapManager::GetSingleton()->GetImg(tmp)->GetSize().cy * 1.45;
-		StartX = m_ClientRct.right*0.25 + BitMapManager::GetSingleton()->GetImg(ICON_TITLE)->GetSize().cx;
-		StartY += y;
-		StarColor(&tmp);
-		BitMapManager::GetSingleton()->GetImg(tmp)->Draw(m_backbufferDC, StartX, StartY, 1, 1);
-	}
-	
-
-
-
 }
 
 void GameManager::StarColor(IMG* s)
@@ -331,10 +395,10 @@ void  GameManager::Main()
 {
 	RECT SelectRct = { m_ClientRct.right * 0.3, m_ClientRct.bottom * 0.68, m_ClientRct.right * 0.7, m_ClientRct.bottom * 0.75 };
 
+
+
 	BitMapManager::GetSingleton()->GetImg(ICON_TITLE)->
 		Draw(m_backbufferDC, m_ClientRct.right*0.27, m_ClientRct.bottom*0.23, 1);
-
-	MainStar();
 
 	m_Font.Text(m_ClientRct.right*0.4, m_ClientRct.bottom*0.6, L"PLAY SELECT", 0x00ffffff);
 
@@ -503,6 +567,22 @@ void GameManager::StatWindow()
 
 //Release
 void GameManager::Release()
+{
+	m_Backgrd.Release();
+	m_Enemy.Release();
+
+	for (vector<Star*>::iterator it = m_Star.begin(); it != m_Star.end(); it++)
+
+	{
+		delete (*it);
+	}
+	m_Star.clear();
+
+	BitMapManager::GetSingleton()->Release();
+	BitMapManager::Release();
+}
+
+void GameManager::ObejectClear()
 {
 	m_Backgrd.Release();
 	m_Enemy.Release();
