@@ -64,7 +64,7 @@ void GameManager::SetMainStar()
 		StarColor(&Color);
 		m_Star.push_back(new Star);
 		m_Star.back()->pos.m_fX = StartX + i * iconsizeX*1.2;
-		m_Star.back()->pos.m_fY = StartY  + BitMapManager::GetSingleton()->GetImg(ICON_TITLE)->GetSize().cy * 1.2;
+		m_Star.back()->pos.m_fY = StartY  + BitMapManager::GetSingleton()->GetImg(ICON_TITLE)->GetSize().cy * 1.25;
 		m_Star.back()->starColor = Color;
 	}
 
@@ -138,7 +138,7 @@ void GameManager::Update()
 	else if (m_eGameState == GAME_END)
 	{
 		m_Backgrd.EndMotion();
-		m_Backgrd.Update();
+		m_Backgrd.Update(ENDPOS,m_Player.GetMove());
 		m_Player.Update(ENDPOS);
 		StatWindow();
 		EndScore();
@@ -153,8 +153,8 @@ void GameManager::ObjectUpdate()
 
 	if (m_eLine == NOTEND)
 	{
-		m_Backgrd.Update();
-		m_Enemy.Update(NOTEND);
+		m_Backgrd.Update(NOTEND,m_Player.GetMove());
+		m_Enemy.Update(NOTEND, m_Player.GetMove());
 		m_Player.Update(NOTEND);
 		m_Backgrd.CheckDistacne(m_Player.GetPlayX());
 		m_Enemy.HalfRender();
@@ -163,14 +163,14 @@ void GameManager::ObjectUpdate()
 	{
 		m_Backgrd.Render();
 		m_Player.Update(NOTEND);
-		m_Enemy.Update(STARTLINE);
+		m_Enemy.Update(STARTLINE, m_Player.GetMove());
 		m_Enemy.HalfRender();
 		Render();
 	}
 	else if (m_eLine == ENDLINE)
 	{
-		m_Backgrd.Update();
-		m_Enemy.Update(ENDLINE);
+		m_Backgrd.Update(ENDLINE,m_Player.GetMove());
+		m_Enemy.Update(ENDLINE, m_Player.GetMove());
 		EndLine();
 		m_Backgrd.CheckDistacne(m_Player.GetPlayX());
 		m_Enemy.HalfRender();
@@ -196,12 +196,10 @@ void GameManager::Collision()
 			m_dwLastTime = m_dwCurTime;
 		}
 	}
-
 }
 
 void GameManager::MainUpdate()
 {
-
 	StarUpdate();
 
 	if (m_eGameState == GAME_INIT)
@@ -277,7 +275,7 @@ void GameManager::EnemyPass()
 {
 	PASS Rpatype, Jpatype;
 
-	if (m_Player.GetState() == IDLE && m_ePasscheck != PASS_NOT)
+	if (!m_Player.GetMove() && m_ePasscheck != PASS_NOT)
 	{
 		switch (m_ePasscheck)
 		{
@@ -304,7 +302,7 @@ void GameManager::EnemyPass()
 		m_ePasscheck = PASS_NOT;
 	}
 
-	if (m_Player.GetState() == JUMP)
+	if (m_Player.GetMove())
 	{
 		Rpatype = m_Enemy.RingPassCheck(m_Player.GetPlayX());
 		Jpatype = m_Enemy.JarPassCheck(m_Player.GetPlayX());

@@ -12,6 +12,9 @@ private:
 	vector<MITTER*> m_Mitter;
 	PODIUM m_Podium;
 
+	DIRECTION m_eDirection;
+	LINE m_eline;
+
 	int NowDistance;
 	float backlength;
 
@@ -25,8 +28,10 @@ public:
 	void Init(int x, int y);
 
 	//Update
-	void Update();
-	void Move();
+	void Update(LINE line, bool state);
+	void Move(bool state);
+	void LeftMove();
+	void RightMove();
 
 	bool PodiumCheck(RECT rect);
 	void PodiumRctUpdate();

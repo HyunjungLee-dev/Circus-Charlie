@@ -11,6 +11,8 @@ private:
 	list<Fire*> m_Ringlist;
 	vector<Fire*> m_Jar;
 
+	DIRECTION m_eDirection;
+
 	HDC m_backbufferDC;
 	bool m_bPassCheck;
 	LINE m_eLine;
@@ -24,9 +26,12 @@ public:
 	void SetRing();
 
 	//Update
-	void Update(LINE line);
+	void Update(LINE line, bool state);
 	void UpdateRectPos();
-	void Move();
+	void Move(bool state);
+	void LeftMove();
+	void RightMove();
+	void FireMove();
 	void Motion(Fire* f);
 
 	bool Collision(RECT rect);

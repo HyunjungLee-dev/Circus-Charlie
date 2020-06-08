@@ -8,7 +8,7 @@
 using namespace std;
 
 #define PI	3.141592f
-#define LENGTH 0.8f
+#define LENGTH 0.5f
 #define DISTANCE 550
 
 

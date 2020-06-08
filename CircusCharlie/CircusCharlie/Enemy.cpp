@@ -72,47 +72,86 @@ void Enemy::SetRing()
 
 
 //Update
-void Enemy::Update(LINE line)
+void Enemy::Update(LINE line, bool state)
 {
 	m_eLine = line;
 
 	SetRing();
-	Move();
+	Move(state);
 	UpdateRectPos();
 	Render();
 }
 
-void Enemy::Move()
+void Enemy::LeftMove()
 {
-	if (GetKeyState(VK_LEFT) & 0x8000)
+	for (vector<Fire*>::iterator iter = m_Jar.begin(); iter != m_Jar.end(); iter++)
 	{
-		for (vector<Fire*>::iterator iter = m_Jar.begin(); iter != m_Jar.end(); iter++)
+		if (m_eLine != STARTLINE)
 		{
-			if ( m_eLine != STARTLINE)
-			{
-				(*iter)->pos.m_fX += LENGTH;
-			}
+			(*iter)->pos.m_fX += LENGTH;
 		}
-		
 	}
-	if (GetKeyState(VK_RIGHT) & 0x8000)
+}
+
+void Enemy::RightMove()
+{
+	for (vector<Fire*>::iterator iter = m_Jar.begin(); iter != m_Jar.end(); iter++)
 	{
-		for (vector<Fire*>::iterator iter = m_Jar.begin(); iter != m_Jar.end(); iter++)
-		{
-			if ( m_eLine != STARTLINE)
-			{
-				(*iter)->pos.m_fX -= LENGTH;
-			}
-		}
-		
-		for (list<Fire*>::iterator iter = m_Ringlist.begin(); iter != m_Ringlist.end(); iter++)
+		if (m_eLine != STARTLINE)
 		{
 			(*iter)->pos.m_fX -= LENGTH;
 		}
 	}
 
+	for (list<Fire*>::iterator iter = m_Ringlist.begin(); iter != m_Ringlist.end(); iter++)
+	{
+		(*iter)->pos.m_fX -= LENGTH;
+	}
+}
 
 
+void Enemy::Move(bool state)
+{
+	if (state)
+	{
+		if (m_eDirection == DIRECTION_RIGHT)
+		{
+			RightMove();
+		}
+		else if (m_eDirection == DIRECTION_LEFT)
+		{
+
+			LeftMove();
+		}
+
+		FireMove();
+
+		return;
+	}
+	else
+	{
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		{
+			m_eDirection = DIRECTION_LEFT;
+			LeftMove();
+		}
+		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		{
+			m_eDirection = DIRECTION_RIGHT;
+			RightMove();
+		}
+		else
+		{
+			m_eDirection = DIRECTION_NONE;
+		}
+	}
+
+	FireMove();
+	
+}
+
+void Enemy::FireMove()
+{
 	for (vector<Fire*>::iterator iter = m_Jar.begin(); iter != m_Jar.end(); iter++)
 	{
 		Motion((*iter));

@@ -12,6 +12,7 @@ private:
 
 	float		m_fJumpX;
 	float		m_fJumpY;
+	bool isJumping;
 
 	POS m_Pos;
 	RECT m_playerRect;
@@ -46,6 +47,13 @@ public:
 	float GetPlayX() { return m_Pos.m_fX; }
 	RECT GetPlayerRct() { return m_playerRect; }
 	PLAYERSTATE GetState() { return m_eState; }
+	bool GetMove() {
+		
+		if (isJumping &&  m_eEnd != ENDPOS)
+			return true;
+		else
+			return false;
+	}
 
 	//Setter
 	void SetLife() { m_iLife--; }

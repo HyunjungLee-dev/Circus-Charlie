@@ -23,6 +23,9 @@ void Player::Init()
 	m_dwCurTime = GetTickCount();
 	m_fCurJumpTime = 0.0f;
 	m_fMotionTime = 0.0f;
+
+	isJumping = false;
+
 }
 
 //Update
@@ -35,7 +38,6 @@ void Player::Update(LINE state)
 	m_eEnd = state;
 
 	Move();
-	Jump();
 	Motion();
 	Render();
 }
@@ -43,7 +45,10 @@ void Player::Update(LINE state)
 void Player::Move()
 {
 	if (m_eEnd == ENDPOS)
+	{
+		Jump();
 		return;
+	}
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
@@ -54,10 +59,8 @@ void Player::Move()
 		if (m_eState == IDLE)
 			m_eState = MOVE;
 
-		m_eDirection = DIRECTION_LEFT;
 
-
-
+			m_eDirection = DIRECTION_LEFT;
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
@@ -68,30 +71,43 @@ void Player::Move()
 		if (m_eState == IDLE)
 			m_eState = MOVE;
 
-		m_eDirection = DIRECTION_RIGHT;
+			m_eDirection = DIRECTION_LEFT;
 	}
-	if (GetKeyState(VK_SPACE) & 0x8000)
+
+
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
-		if (m_eState == IDLE || m_eState == MOVE)
+		if (!isJumping)
 		{
-			m_eState = JUMP;
-			m_fJumpX = m_Pos.m_fX;
-			m_fJumpY = m_Pos.m_fY;
+				isJumping = true;
+				m_fJumpX = m_Pos.m_fX;
+				m_fJumpY = m_Pos.m_fY;
+
 		}
+		else
+		{
+			if (m_Pos.m_fY < 345.0f)
+			{
+				Jump();
+			}
+		}
+
+	}
+	else
+	{
+		Jump();
 	}
 
 	UpdateRct();
 }
 
-void Player::Jump()
+void Player::Jump()	 
 {
-
-	if (m_eState == JUMP)
+	if (isJumping)
 	{
 		m_fCurJumpTime += m_fDeltaTime;
 
 		if (m_eEnd == ENDLINE)
-
 		{
 			if (m_eDirection == DIRECTION_LEFT)
 				m_Pos.m_fX -= 20 * m_fDeltaTime;
@@ -110,11 +126,12 @@ void Player::Jump()
 		if (m_fCurJumpTime > 1.0f)
 		{
 			m_eState = IDLE;
+			isJumping = false;
 			m_eDirection = DIRECTION_NONE;
 			m_fCurJumpTime = 0.0f;
 			if (m_eEnd == ENDPOS)
 			{
-				m_Pos.m_fX = 330.0f;
+				m_Pos.m_fX = 350.0f;
 				m_Pos.m_fY = 300.0f;
 				m_eState = P_END;
 				m_ePlayImg = PLAYER_WIN0;
@@ -180,12 +197,15 @@ void Player::Motion()
 			m_fMotionTime = 0.0f;
 		}
 	}
-	else if (m_eState == JUMP)
+	if (isJumping && m_eEnd != ENDPOS)
 	{
-		if (m_ePlayImg == PLAYER_DIE)
-			m_ePlayImg = PLAYER_DIE;
-		else
-			m_ePlayImg = PLAYER_MOVE2;
+		if (m_Pos.m_fY < 345.0f)
+		{
+			if (m_ePlayImg == PLAYER_DIE)
+				m_ePlayImg = PLAYER_DIE;
+			else
+				m_ePlayImg = PLAYER_MOVE2;
+		}
 	}
 
 }

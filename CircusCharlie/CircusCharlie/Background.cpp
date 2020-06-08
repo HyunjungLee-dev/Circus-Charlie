@@ -50,84 +50,124 @@ void Background::Init(int x, int y)
 }
 
 //Update
-void Background::Update()
+void Background::Update(LINE line, bool state)
 {
-	Move();
+	m_eline = line;
+
+	Move(state);
 	PodiumRctUpdate();
 	Render();
 }
 
-void Background::Move()
+
+void Background::LeftMove()
 {
 	int imgSizeX = BitMapManager::GetSingleton()->GetImg(BACK_NOMAL0)->GetSize().cx*1.25;
 
-	if (GetKeyState(VK_LEFT) & 0x8000)
+	for (list<BACKGROUND*>::iterator iter = m_Fieldlist.begin(); iter != m_Fieldlist.end(); iter++)
 	{
-		for (list<BACKGROUND*>::iterator iter = m_Fieldlist.begin(); iter != m_Fieldlist.end(); iter++)
-		{
-			(*iter)->pos.m_fX += LENGTH;
-		}
+		(*iter)->pos.m_fX += LENGTH;
+	}
 
-		for (list<BACKGROUND*>::iterator iter = m_Audiencelist.begin(); iter != m_Audiencelist.end(); iter++)
-		{
-			(*iter)->pos.m_fX += LENGTH;
-		}
+	for (list<BACKGROUND*>::iterator iter = m_Audiencelist.begin(); iter != m_Audiencelist.end(); iter++)
+	{
+		(*iter)->pos.m_fX += LENGTH;
+	}
 
-		for (vector<MITTER*>::iterator iter = m_Mitter.begin(); iter != m_Mitter.end(); iter++)
-		{
-			(*iter)->pos.m_fX += LENGTH;
-
-		}
-
-		m_Podium.pos.m_fX += LENGTH;
+	for (vector<MITTER*>::iterator iter = m_Mitter.begin(); iter != m_Mitter.end(); iter++)
+	{
+		(*iter)->pos.m_fX += LENGTH;
 
 	}
 
-	if (GetKeyState(VK_RIGHT) & 0x8000)
+	m_Podium.pos.m_fX += LENGTH;
+}
+
+void Background::RightMove()
+{
+	int imgSizeX = BitMapManager::GetSingleton()->GetImg(BACK_NOMAL0)->GetSize().cx*1.25;
+
+	for (list<BACKGROUND*>::iterator iter = m_Audiencelist.begin(); iter != m_Audiencelist.end(); iter++)
 	{
-		for (list<BACKGROUND*>::iterator iter = m_Audiencelist.begin(); iter != m_Audiencelist.end(); iter++)
+		(*iter)->pos.m_fX -= LENGTH;
+		if ((*iter)->pos.m_fX + imgSizeX < 0)
 		{
-			(*iter)->pos.m_fX -= LENGTH;
-			if ((*iter)->pos.m_fX + imgSizeX < 0)
-			{
-				int x = m_Audiencelist.back()->pos.m_fX;
-				int y = m_Audiencelist.back()->pos.m_fY;
+			int x = m_Audiencelist.back()->pos.m_fX;
+			int y = m_Audiencelist.back()->pos.m_fY;
 
-				if (x + imgSizeX < 512)
-				{
-					m_Audiencelist.push_back(new BACKGROUND);
-					m_Audiencelist.back()->pos.m_fX = x + imgSizeX;
-					m_Audiencelist.back()->pos.m_fY = y;
-					m_Audiencelist.back()->m_eImg = BACK_NOMAL0;
-				}
+			if (x + imgSizeX < 512)
+			{
+				m_Audiencelist.push_back(new BACKGROUND);
+				m_Audiencelist.back()->pos.m_fX = x + imgSizeX;
+				m_Audiencelist.back()->pos.m_fY = y;
+				m_Audiencelist.back()->m_eImg = BACK_NOMAL0;
 			}
 		}
+	}
 
-		for (list<BACKGROUND*>::iterator iter = m_Fieldlist.begin(); iter != m_Fieldlist.end(); iter++)
+
+	for (list<BACKGROUND*>::iterator iter = m_Fieldlist.begin(); iter != m_Fieldlist.end(); iter++)
+	{
+		(*iter)->pos.m_fX -= LENGTH;
+		if ((*iter)->pos.m_fX + imgSizeX < 0)
 		{
-			(*iter)->pos.m_fX -= LENGTH;
-			if ((*iter)->pos.m_fX + imgSizeX < 0)
+			int x = m_Fieldlist.back()->pos.m_fX;
+			int y = m_Fieldlist.back()->pos.m_fY;
+
+			if (x + imgSizeX < 512)
 			{
-				int x = m_Fieldlist.back()->pos.m_fX;
-				int y = m_Fieldlist.back()->pos.m_fY;
-
-				if (x + imgSizeX < 512)
-				{
-					m_Fieldlist.push_back(new BACKGROUND);
-					m_Fieldlist.back()->pos.m_fX = x + imgSizeX;
-					m_Fieldlist.back()->pos.m_fY = y;
-					m_Fieldlist.back()->m_eImg = BACK_WAY;
-				}
-				
+				m_Fieldlist.push_back(new BACKGROUND);
+				m_Fieldlist.back()->pos.m_fX = x + imgSizeX;
+				m_Fieldlist.back()->pos.m_fY = y;
+				m_Fieldlist.back()->m_eImg = BACK_WAY;
 			}
-		}
 
-		for (vector<MITTER*>::iterator iter = m_Mitter.begin(); iter != m_Mitter.end(); iter++)
+		}
+	}
+
+	for (vector<MITTER*>::iterator iter = m_Mitter.begin(); iter != m_Mitter.end(); iter++)
+	{
+		(*iter)->pos.m_fX -= LENGTH;
+	}
+	m_Podium.pos.m_fX -= LENGTH;
+}
+
+void Background::Move(bool state)
+{
+	
+	if (state)
+	{
+		if (m_eDirection == DIRECTION_RIGHT)
 		{
-			(*iter)->pos.m_fX -= LENGTH;
+			RightMove();
 		}
+		else if (m_eDirection == DIRECTION_LEFT)
+		{
 
-		m_Podium.pos.m_fX -= LENGTH;
+			LeftMove();
+		}
+		else
+			return;
+
+		return;
+	}
+	
+	if(m_eline != ENDPOS)
+	{
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		{
+			m_eDirection = DIRECTION_LEFT;
+			LeftMove();
+		}
+		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		{
+			m_eDirection = DIRECTION_RIGHT;
+			RightMove();
+		}
+		else
+		{
+			m_eDirection = DIRECTION_NONE;
+		}
 	}
 }
 
