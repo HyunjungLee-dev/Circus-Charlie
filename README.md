@@ -1,5 +1,5 @@
 # Circus Charlie
-An imatation of Circus Charlie Stage 1 in C++ / WinApi
+An Remake of Circus Charlie Stage 1 in C++ / WinApi
 
 ## Controls
 
